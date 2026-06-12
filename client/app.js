@@ -142,6 +142,43 @@ const state = {
 // localStorage에 마지막 로드맵 저장
 const LS_KEY = "spiral-buddy:lastRoadmapId";
 
+// ──────────────────────────────────────────────────────────
+// v0.4.2 — 레포/로드맵 표시명 prettify (표시 전용!)
+// "linear-algebra-deep-dive" → "Linear Algebra", "ch4-svd" → "Ch4 SVD".
+// id·경로·노트 frontmatter·API 페이로드에는 절대 적용하지 않는다 —
+// 원본 이름이 진행도/노트 매칭의 키이므로 렌더링 직전에만 감쌀 것.
+// ──────────────────────────────────────────────────────────
+
+const PRETTY_WORD = {
+  ml: "ML", dl: "DL", rl: "RL", ai: "AI", llm: "LLM", lm: "LM", nlp: "NLP",
+  cnn: "CNN", rnn: "RNN", lstm: "LSTM", gnn: "GNN", ntk: "NTK", kkt: "KKT",
+  sde: "SDE", svd: "SVD", pca: "PCA", lu: "LU", qr: "QR", mcmc: "MCMC",
+  mdp: "MDP", dqn: "DQN", ppo: "PPO", sac: "SAC", td: "TD", dp: "DP",
+  ucb: "UCB", pac: "PAC", gae: "GAE", trpo: "TRPO", td3: "TD3",
+  rlhf: "RLHF", dpo: "DPO", lora: "LoRA", qlora: "QLoRA", moe: "MoE",
+  kv: "KV", vllm: "vLLM", vit: "ViT", detr: "DETR", yolo: "YOLO",
+  ddpm: "DDPM", ddim: "DDIM", nerf: "NeRF", "3d": "3D", cv: "CV",
+  bert: "BERT", gpt: "GPT", bpe: "BPE", glove: "GloVe", word2vec: "Word2Vec",
+  stft: "STFT", ctc: "CTC", rvq: "RVQ", gan: "GAN", vae: "VAE",
+  mlops: "MLOps", ab: "A/B", pytorch: "PyTorch", icl: "ICL", pe: "PE",
+  bptt: "BPTT", rag: "RAG", mcts: "MCTS", grpo: "GRPO", prm: "PRM",
+  hnsw: "HNSW", ivf: "IVF", pq: "PQ", mvcc: "MVCC",
+};
+
+function prettyName(name) {
+  if (name == null) return "";
+  const s = String(name).replace(/-deep-dive$/i, "");
+  const words = s
+    .split(/[-_]+/)
+    .filter(Boolean)
+    .map((w) => {
+      const special = PRETTY_WORD[w.toLowerCase()];
+      if (special) return special;
+      return w.charAt(0).toUpperCase() + w.slice(1);
+    });
+  return words.length ? words.join(" ") : String(name);
+}
+
 const CATEGORY_ICON_BY_NAME = {
   // iq-ai-lab Layer 0~6 도메인 (도메인 = 카테고리 1:1)
   mathematics: "sigma",
@@ -901,7 +938,7 @@ function renderRoadmapSelector() {
 
   els.roadmapCurrent.innerHTML = `
     <div class="roadmap-current-inner">
-      <span class="roadmap-name">${active ? activeSrc + " " : ""}${escapeHtml(activeName)}</span>
+      <span class="roadmap-name">${active ? activeSrc + " " : ""}${escapeHtml(active ? prettyName(activeName) : activeName)}</span>
       ${active ? `<span class="roadmap-progress">${activeProgress}</span>` : ""}
     </div>
     <span class="caret">▼</span>
@@ -918,6 +955,10 @@ function renderRoadmapSelector() {
       r.category?.name ?? "",
       r.hierarchy?.repo ?? "",
       r.hierarchy?.sub ?? "",
+      // v0.4.2 — 표시명(prettify)으로도 매칭: "linear algebra"처럼 공백 검색 지원
+      prettyName(r.name),
+      prettyName(r.hierarchy?.repo),
+      prettyName(r.hierarchy?.sub),
     ]
       .join(" ")
       .toLowerCase();
@@ -1154,7 +1195,7 @@ function renderRoadmapSelector() {
               .map((r, idx) => {
                 const isActive = r.id === state.activeRoadmapId;
                 const { sub } = parseHierarchy(r);
-                const displayName = sub ?? r.name;
+                const displayName = prettyName(sub ?? r.name);
                 const lastDate = r.lastDate ?? "—";
                 const visited = (r.maxDepth ?? 0) > 0;
                 const depthBadge = visited
@@ -1205,7 +1246,7 @@ function renderRoadmapSelector() {
               <button class="${repoClass} ${isFlatActive ? "active" : ""}" ${repoHeaderAttrs}>
                 ${!isSingleFlat ? `<span class="cat-caret">${repoCaret}</span>` : `<span class="cat-caret"> </span>`}
                 ${repoIconHtml()}
-                <span class="repo-name">${escapeHtml(repoName)}</span>
+                <span class="repo-name">${escapeHtml(prettyName(repoName))}</span>
                 ${repoDepthBadge}
                 <span class="cat-count">${isSingleFlat ? roadmaps[0].chapterCount : roadmaps.length}</span>
               </button>
@@ -1331,7 +1372,7 @@ function renderRoadmapSelector() {
                   const buttonLabel = isInstalling ? "받는 중…" : "📥 받기";
                   return `
                     <div class="curated-available-item">
-                      <div class="curated-available-name">${escapeHtml(repo.name)}</div>
+                      <div class="curated-available-name">${escapeHtml(prettyName(repo.name))}</div>
                       ${desc ? `<div class="curated-available-desc">${desc}</div>` : ""}
                       <div class="curated-available-meta">
                         <span>⭐ ${repo.stars}</span>
@@ -1523,7 +1564,7 @@ function roadmapItemHtml(r) {
     r.maxDepth > 0 ? `<span class="depth-pill">d${r.maxDepth}</span>` : "";
   return `
     <button class="roadmap-item ${isActive ? "active" : ""}" data-id="${escapeAttr(r.id)}">
-      <div class="roadmap-item-name">${escapeHtml(r.name)}</div>
+      <div class="roadmap-item-name">${escapeHtml(prettyName(r.name))}</div>
       <div class="roadmap-item-meta">
         ${depthBadge}
         <span class="roadmap-item-progress">${r.visitedChapters}/${r.chapterCount}</span>
@@ -1538,7 +1579,7 @@ async function installCuratedRepo(repoName) {
   if (state.installingRepo) return; // 중복 클릭 방지
   state.installingRepo = repoName;
   renderRoadmapSelector();
-  setStatus(`📥 ${repoName} 클론 중… (수초~수십초)`);
+  setStatus(`📥 ${prettyName(repoName)} 클론 중… (수초~수십초)`);
 
   try {
     const res = await fetch("/api/curated/install", {
@@ -1563,7 +1604,7 @@ async function installCuratedRepo(repoName) {
       localStorage.setItem(LS_KEY, newOne.id);
     }
 
-    setStatus(`✓ ${repoName} 설치 완료`, "success");
+    setStatus(`✓ ${prettyName(repoName)} 설치 완료`, "success");
     state.installingRepo = null;
     renderRoadmapSelector();
     if (state.activeRoadmapId) await loadRoadmapData();
@@ -4105,7 +4146,12 @@ function renderTrashList(entries) {
       const title = e.title || e.topic || e.originalName || e.fileName;
       const depthLabel = e.depth !== null ? `d${e.depth}` : "—";
       const trashedAt = (e.trashedAt ?? "").slice(0, 19).replace("T", " ");
-      const scope = [e.roadmapName, e.chapterId].filter(Boolean).join(" · ");
+      const scope = [
+        e.roadmapName ? prettyName(e.roadmapName) : null,
+        e.chapterId,
+      ]
+        .filter(Boolean)
+        .join(" · ");
       return `
         <li class="trash-item">
           <div class="trash-item-main">
@@ -4481,7 +4527,7 @@ function renderSearchResults(res, q) {
     items.push({
       kind: "roadmap",
       payload: r,
-      label: r.name,
+      label: prettyName(r.name),
       sublabel: r.path,
     });
   }
@@ -4491,7 +4537,7 @@ function renderSearchResults(res, q) {
       kind: "chapter",
       payload: c,
       label: c.title,
-      sublabel: `${c.roadmapName} · ${c.chapterId}`,
+      sublabel: `${prettyName(c.roadmapName)} · ${c.chapterId}`,
     });
   }
   // 노트
@@ -4500,7 +4546,7 @@ function renderSearchResults(res, q) {
       kind: "note",
       payload: n,
       label: n.title || n.topic,
-      sublabel: `d${n.depth} · ${n.date} · ${n.roadmapName ?? "?"} · ${n.chapterId ?? "?"}`,
+      sublabel: `d${n.depth} · ${n.date} · ${n.roadmapName ? prettyName(n.roadmapName) : "?"} · ${n.chapterId ?? "?"}`,
     });
   }
   _searchState.items = items;
@@ -5188,7 +5234,7 @@ function refreshPausedList() {
           <div class="paused-item-title">${escapeHtml(p.chapterTitle ?? "세션")}</div>
           <div class="paused-item-meta">
             ${p.depth ? `<span class="paused-item-depth">d${p.depth}</span>` : ""}
-            <span class="paused-item-roadmap">${escapeHtml(p.roadmapName ?? "")}</span>
+            <span class="paused-item-roadmap">${escapeHtml(prettyName(p.roadmapName ?? ""))}</span>
             <span class="paused-item-time">${_relTime(p.pausedAt ?? Date.now())}</span>
           </div>
         </button>
@@ -5756,7 +5802,7 @@ function showCompletionCard(result) {
 
 function updateTopbar() {
   if (state.session) {
-    const rmName = state.session.roadmapName ?? "";
+    const rmName = prettyName(state.session.roadmapName ?? "");
     els.topbar.innerHTML = `
       <svg class="topbar-chapter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
