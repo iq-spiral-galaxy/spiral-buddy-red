@@ -1,6 +1,6 @@
 {
   "name": "spiral-buddy-red",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Spiral learning buddy for AI & math. Local desktop app — roadmap-driven sessions, auto-structured notes, spiral revisit detection.",
   "type": "module",
   "main": "electron/main.cjs",
@@ -14,6 +14,7 @@
     "mcp": "tsx src/mcp.ts",
     "build": "tsc",
     "typecheck": "tsc --noEmit",
+    "vendor": "node scripts/build-vendor.mjs",
     "electron:dev": "tsc && electron electron/main.cjs",
     "electron:build": "tsc && electron-builder",
     "electron:build:mac": "tsc && electron-builder --mac",
@@ -35,8 +36,15 @@
   "devDependencies": {
     "@resvg/resvg-js": "^2.6.2",
     "@types/node": "^22.10.2",
+    "dompurify": "3.1.6",
     "electron": "^30.5.1",
     "electron-builder": "^24.13.3",
+    "esbuild": "0.28.0",
+    "highlight.js": "11.10.0",
+    "katex": "0.16.21",
+    "marked": "13.0.3",
+    "marked-highlight": "2.2.1",
+    "marked-katex-extension": "5.1.10",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"
   },

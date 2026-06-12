@@ -11,15 +11,10 @@
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
     />
     <link rel="stylesheet" href="/styles.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/highlight.js@11.10.0/styles/github-dark.min.css"
-    />
-    <!-- v0.3.0 — 수식 렌더링 (KaTeX). app.js의 marked-katex-extension과 세트 -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css"
-    />
+    <!-- v0.4.0 — CDN 대신 로컬 vendor (scripts/build-vendor.mjs 산출물) -->
+    <link rel="stylesheet" href="/vendor/github-dark.min.css" />
+    <!-- 수식 렌더링 (KaTeX). app.js의 marked-katex-extension과 세트 -->
+    <link rel="stylesheet" href="/vendor/katex.min.css" />
   </head>
   <body>
     <aside id="sidebar">

@@ -1,11 +1,13 @@
 // iq-spiral-buddy client — vanilla ES module
 // 로드맵 상태 관리 + 마크다운 렌더링 + 스트리밍
 
-import { marked } from "https://esm.sh/marked@13.0.3";
-import { markedHighlight } from "https://esm.sh/marked-highlight@2.2.1";
-import markedKatex from "https://esm.sh/marked-katex-extension@5.1.10";
-import hljs from "https://esm.sh/highlight.js@11.10.0";
-import DOMPurify from "https://esm.sh/dompurify@3.1.6";
+// v0.4.0 — CDN(esm.sh) 의존 제거. 로컬 vendor 번들 사용 (scripts/build-vendor.mjs,
+// 버전은 package.json devDependencies가 단일 소스). CDN 장애 시에도 앱이 뜬다.
+import { marked } from "./vendor/marked.js";
+import { markedHighlight } from "./vendor/marked-highlight.js";
+import markedKatex from "./vendor/marked-katex-extension.js";
+import hljs from "./vendor/highlight.js";
+import DOMPurify from "./vendor/dompurify.js";
 
 // ──────────────────────────────────────────────────────────
 // Markdown setup

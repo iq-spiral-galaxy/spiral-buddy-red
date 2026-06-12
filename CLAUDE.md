@@ -57,6 +57,15 @@ Phase 0 끝나면 `pnpm i && pnpm build`로 검증하고 첫 태그(v0.1.0) 전�
   session-store.ts의 **MATH_RENDER_NOTE 공통 상수** — 세션/룩업/챕터맥락/note-writer에 주입됨.
   새 프롬프트에 수식 지시 추가할 땐 이 상수를 재사용할 것.
 
+## 클라이언트 vendor (v0.4.0 — Red에서 추가)
+
+marked/marked-highlight/marked-katex-extension/highlight.js/DOMPurify/KaTeX(CSS+woff2)를
+esm.sh·jsdelivr 대신 **client/vendor/ 로컬 번들**로 동봉 — CDN 장애 시에도 앱이 뜬다.
+- 재생성: `pnpm vendor` (scripts/build-vendor.mjs). 산출물은 git에 커밋 (CI 재빌드 없음).
+- 버전 단일 소스: package.json devDependencies. 라이브러리 올릴 땐 devDep 변경 → `pnpm vendor` → 커밋.
+- highlight.js는 lib/common(~37개 언어)만 — 미지원 언어는 plaintext fallback.
+- Google Fonts만 CDN 잔존 (미로드 시 시스템 폰트 fallback이라 치명적이지 않음).
+
 ## 물려받은 인프라 (바꾸지 말 것 — Blue에서 검증된 핵심)
 
 - **자동 업데이트**: in-app 다운로드(Node https, 진행률) + installer 직접 실행. PowerShell 스크립트 방식으로 되돌리지 말 것 (Blue에서 TLS/정책 문제로 폐기)

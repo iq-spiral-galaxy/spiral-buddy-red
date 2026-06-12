@@ -213,6 +213,9 @@ pnpm electron:dev
 pnpm electron:build:mac    # macOS dmg
 pnpm electron:build:win    # Windows exe
 pnpm electron:build:linux  # Linux AppImage
+
+# 클라이언트 vendor 번들 재생성 (marked/KaTeX 등 버전 올렸을 때만)
+pnpm vendor
 ```
 
 `.env` 파일 (개발 모드용):
