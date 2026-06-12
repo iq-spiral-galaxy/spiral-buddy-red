@@ -78,7 +78,19 @@ const state = {
 const LS_KEY = "spiral-buddy:lastRoadmapId";
 
 const CATEGORY_ICON_BY_NAME = {
-  // Backend categories
+  // iq-ai-lab Layer 0~6 도메인 (도메인 = 카테고리 1:1)
+  mathematics: "sigma",
+  "ml theory": "chart",
+  "neural network theory": "network",
+  architectures: "temple",
+  "reinforcement learning": "target",
+  "large language models": "chat",
+  "cv & 3d": "eye",
+  nlp: "pen",
+  "audio & speech": "wave",
+  systems: "monitor",
+  "frontier llm": "compass",
+  // (이하 Blue 시절 키 — 로컬 폴더명 매칭용으로 유지)
   "java core": "coffee",
   "spring ecosystem": "leaf",
   "architecture & design": "temple",
@@ -130,6 +142,15 @@ const ICON_SVG = {
   dna: `<path d="M5 4c14 4 0 12 14 16"/><path d="M19 4c-14 4 0 12 -14 16"/><line x1="7" y1="8" x2="14" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="17" y2="16"/>`,
   // v0.5.55 — Backend 도메인용 wrench
   wrench: `<path d="M14.7 6.3a4.5 4.5 0 0 1 5.6 5.6L18 14l-4-4 0.7-2.1z"/><path d="M14 10l-9 9a2 2 0 0 1-3-3l9-9"/>`,
+  // v0.2.1 (Red) — iq-ai-lab Layer 도메인 아이콘
+  sigma: `<path d="M18 5H6.5l6.5 7-6.5 7H18"/>`,
+  network: `<circle cx="5.5" cy="6" r="2"/><circle cx="18.5" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="m6.8 7.7 4 8.3"/><path d="m17.2 7.7-4 8.3"/><path d="M7.5 6h9"/>`,
+  target: `<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/>`,
+  chat: `<path d="M20 14a2 2 0 0 1-2 2H9l-5 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/>`,
+  eye: `<path d="M2.5 12S6.5 5.5 12 5.5 21.5 12 21.5 12 17.5 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/>`,
+  pen: `<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>`,
+  wave: `<line x1="4" y1="9" x2="4" y2="15"/><line x1="8" y1="6" x2="8" y2="18"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="16" y1="6" x2="16" y2="18"/><line x1="20" y1="9" x2="20" y2="15"/>`,
+  compass: `<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>`,
 };
 
 function svgIcon(name, className = "inline-icon") {
