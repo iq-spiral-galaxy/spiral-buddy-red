@@ -110,9 +110,13 @@ Red는 **AI와 수학**에 집중합니다:
 | 6 | 🧭 **Frontier LLM** | Mechanistic Interpretability · Reasoning · RAG (3) |
 
 **트랙 프리셋** (Setup wizard + 설정 모달):
-- 🧮 **수학 코어부터** — Mathematics · ML Theory · NN Theory (19 repos)
-- 🗣️ **LLM 트랙** — Architectures · LLM · NLP · Frontier (14 repos)
-- 🤖 **RL 트랙** — NN Theory · Architectures · RL (15 repos)
+- 🧮 **수학 코어** — Layer 0: 선형대수 · 확률 · 최적화 · 정보이론 (10 repos)
+- 📐 **머신러닝 이론** — Layer 1: PAC · 커널 · 베이지안 · 그래피컬 (5 repos)
+- 🧠 **딥러닝 트랙** — Layer 2~3: NN 이론 + CNN/RNN/Transformer/GNN (9 repos)
+- 🤖 **강화학습 트랙** — Layer 4-A: 벨만 방정식부터 PPO/SAC까지 (6 repos)
+- 🗣️ **LLM 트랙** — NLP → LLM → Frontier 언어 모델 한 줄기 (9 repos)
+- 👁️ **비전 · 오디오** — Layer 4-C/E: ViT · Diffusion · NeRF + 음성 (5 repos)
+- ⚙️ **AI 시스템** — Layer 5: PyTorch Internals · 분산 학습 · MLOps (4 repos)
 - 🧭 **전체 딥다이브** — Layer 0→6 전부 (48 repos)
 
 ---

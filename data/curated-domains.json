@@ -3,28 +3,60 @@
     "rolePresets": [
       {
         "id": "math-core",
-        "name": "수학 코어부터",
+        "name": "수학 코어",
         "emoji": "🧮",
-        "subtitle": "Mathematics · ML Theory · NN Theory",
-        "domains": ["mathematics", "ml-theory", "nn-theory"],
-        "color": "#e85d4a",
+        "subtitle": "Layer 0 — 선형대수 · 확률 · 최적화 · 정보이론",
+        "domains": ["mathematics"],
+        "color": "#d94f3d",
         "recommended": true
+      },
+      {
+        "id": "ml-track",
+        "name": "머신러닝 이론",
+        "emoji": "📐",
+        "subtitle": "Layer 1 — PAC · 커널 · 베이지안 · 그래피컬",
+        "domains": ["ml-theory"],
+        "color": "#e3633c"
+      },
+      {
+        "id": "dl-track",
+        "name": "딥러닝 트랙",
+        "emoji": "🧠",
+        "subtitle": "Layer 2~3 — NN 이론 + CNN/RNN/Transformer/GNN",
+        "domains": ["nn-theory", "architectures"],
+        "color": "#ef7a36"
+      },
+      {
+        "id": "rl-track",
+        "name": "강화학습 트랙",
+        "emoji": "🤖",
+        "subtitle": "Layer 4-A — 벨만 방정식부터 PPO/SAC까지",
+        "domains": ["rl"],
+        "color": "#c84b4b"
       },
       {
         "id": "llm-track",
         "name": "LLM 트랙",
         "emoji": "🗣️",
-        "subtitle": "Architectures · LLM · NLP · Frontier",
-        "domains": ["architectures", "llm", "nlp", "frontier-llm"],
+        "subtitle": "NLP → LLM → Frontier — 언어 모델 한 줄기",
+        "domains": ["nlp", "llm", "frontier-llm"],
         "color": "#d8566b"
       },
       {
-        "id": "rl-track",
-        "name": "RL 트랙",
-        "emoji": "🤖",
-        "subtitle": "NN Theory · Architectures · RL",
-        "domains": ["nn-theory", "architectures", "rl"],
-        "color": "#c84b4b"
+        "id": "vision-audio-track",
+        "name": "비전 · 오디오",
+        "emoji": "👁️",
+        "subtitle": "Layer 4-C/E — ViT · Diffusion · NeRF + 음성",
+        "domains": ["cv-3d", "audio-speech"],
+        "color": "#b8475f"
+      },
+      {
+        "id": "systems-track",
+        "name": "AI 시스템",
+        "emoji": "⚙️",
+        "subtitle": "Layer 5 — PyTorch Internals · 분산 학습 · MLOps",
+        "domains": ["systems"],
+        "color": "#e0a23e"
       },
       {
         "id": "full-deep-dive",
