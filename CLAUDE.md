@@ -12,7 +12,12 @@ RGB 삼원색 — 세 버디가 모이면 백색광(완전한 지혜)이 된다�
 [spiral-buddy-blue](https://github.com/iq-spiral-galaxy/spiral-buddy-blue) @ fcf6bf1 (v0.5.87+) 스냅샷에서 부트스트랩됨.
 Blue는 실사용 중인 완성형 앱 — 이 레포는 그 인프라를 물려받아 **AI/수학** 도메인으로 특화한다.
 
-## ⚠ Phase 0 — 정체성 분기 (다른 작업 전에 반드시 먼저)
+## ✅ Phase 0 — 정체성 분기 (완료: v0.1.0, 2026-06-12)
+
+아래 체크리스트는 모두 적용되어 v0.1.0으로 릴리즈됨. 다음 작업은 Phase 1 (콘텐츠 분기).
+부트스트랩 함정 하나 추가 발견: **pnpm-workspace.yaml이 .gitignore에 있어서 스냅샷 커밋에서 누락**됐었음
+— pnpm 11은 allowBuilds를 이 파일에서만 읽으므로 CI에서 ERR_PNPM_IGNORED_BUILDS로 install 실패.
+지금은 force-add로 추적 중 (Green 부트스트랩 때도 동일하게 필요).
 
 Blue와 같은 머신에 공존해야 하므로 아래를 안 바꾸면 **사용자 데이터가 Blue와 충돌**한다:
 
