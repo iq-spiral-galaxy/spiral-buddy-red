@@ -82,7 +82,7 @@ export async function startServer(): Promise<{ url: string; port: number }> {
 
   serve({ fetch: app.fetch, port }, async () => {
     console.log();
-    console.log(chalk.bold.cyan("  🌀 iq-spiral-buddy"));
+    console.log(chalk.bold.red("  🌀 spiral-buddy-red"));
     console.log(chalk.gray("  spiral learning · Claude × Obsidian"));
     console.log();
     console.log(

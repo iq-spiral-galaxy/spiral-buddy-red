@@ -68,7 +68,8 @@ export function createApi(config: Config) {
   // 헬퍼
   // ─────────────────────────────────────────────────────
 
-  const vaultSubDir = process.env.SPIRAL_VAULT_SUBDIR?.trim() || "spiral-buddy";
+  const vaultSubDir =
+    process.env.SPIRAL_VAULT_SUBDIR?.trim() || "spiral-buddy-red";
   function obsidianUri(fileNameOrPath: string): string | null {
     if (!config.vaultName || !config.vaultPath) return null;
     const absPath = path.isAbsolute(fileNameOrPath)

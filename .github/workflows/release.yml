@@ -114,23 +114,23 @@ jobs:
           # macOS arm64
           for f in release/*-arm64.dmg; do
             [ -f "$f" ] || continue
-            cp "$f" "release/latest-aliases/Spiral-Buddy-latest-arm64.dmg"
+            cp "$f" "release/latest-aliases/Spiral-Buddy-Red-latest-arm64.dmg"
           done
           # macOS Intel (버전만 들어간 dmg — arm64 가 아닌 것)
           for f in release/*.dmg; do
             case "$f" in *-arm64.dmg) continue;; esac
             [ -f "$f" ] || continue
-            cp "$f" "release/latest-aliases/Spiral-Buddy-latest.dmg"
+            cp "$f" "release/latest-aliases/Spiral-Buddy-Red-latest.dmg"
           done
           # Windows setup
           for f in release/*Setup*.exe; do
             [ -f "$f" ] || continue
-            cp "$f" "release/latest-aliases/Spiral-Buddy-latest-Setup.exe"
+            cp "$f" "release/latest-aliases/Spiral-Buddy-Red-latest-Setup.exe"
           done
           # Linux AppImage
           for f in release/*.AppImage; do
             [ -f "$f" ] || continue
-            cp "$f" "release/latest-aliases/Spiral-Buddy-latest.AppImage"
+            cp "$f" "release/latest-aliases/Spiral-Buddy-Red-latest.AppImage"
           done
           ls -la release/latest-aliases/ || true
 
@@ -152,7 +152,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: spiral-buddy-${{ runner.os }}
+          name: spiral-buddy-red-${{ runner.os }}
           path: |
             release/*.dmg
             release/*.exe
@@ -175,7 +175,7 @@ jobs:
           TAG: ${{ github.ref_name }}
         run: |
           cat > NOTES.md <<'EOF'
-          # Spiral Buddy ${TAG_PLACEHOLDER}
+          # 🔴 Spiral Buddy Red ${TAG_PLACEHOLDER}
 
           ## ⚡ 30초 설치 (한 줄 명령)
 
@@ -185,16 +185,16 @@ jobs:
           <summary>🍎 <strong>macOS — Apple Silicon (M1/M2/M3/M4)</strong></summary>
 
           ```bash
-          osascript -e 'tell application "Spiral Buddy" to quit' 2>/dev/null; sleep 1; \
+          osascript -e 'tell application "Spiral Buddy Red" to quit' 2>/dev/null; sleep 1; \
           cd /tmp && \
-          curl -fL -o /tmp/spiral.dmg "https://github.com/iq-spiral-galaxy/spiral-buddy-blue/releases/latest/download/Spiral-Buddy-latest-arm64.dmg" && \
-          MOUNT=$(hdiutil attach -nobrowse /tmp/spiral.dmg | grep -o '/Volumes/.*' | head -1) && \
-          rm -rf '/Applications/Spiral Buddy.app' && \
-          cp -R "$MOUNT/Spiral Buddy.app" /Applications/ && \
+          curl -fL -o /tmp/spiral-red.dmg "https://github.com/iq-spiral-galaxy/spiral-buddy-red/releases/latest/download/Spiral-Buddy-Red-latest-arm64.dmg" && \
+          MOUNT=$(hdiutil attach -nobrowse /tmp/spiral-red.dmg | grep -o '/Volumes/.*' | head -1) && \
+          rm -rf '/Applications/Spiral Buddy Red.app' && \
+          cp -R "$MOUNT/Spiral Buddy Red.app" /Applications/ && \
           hdiutil detach -quiet "$MOUNT" && \
-          xattr -cr '/Applications/Spiral Buddy.app' && \
-          rm -f /tmp/spiral.dmg && \
-          open '/Applications/Spiral Buddy.app'
+          xattr -cr '/Applications/Spiral Buddy Red.app' && \
+          rm -f /tmp/spiral-red.dmg && \
+          open '/Applications/Spiral Buddy Red.app'
           ```
           </details>
 
@@ -202,16 +202,16 @@ jobs:
           <summary>🍎 <strong>macOS — Intel</strong></summary>
 
           ```bash
-          osascript -e 'tell application "Spiral Buddy" to quit' 2>/dev/null; sleep 1; \
+          osascript -e 'tell application "Spiral Buddy Red" to quit' 2>/dev/null; sleep 1; \
           cd /tmp && \
-          curl -fL -o /tmp/spiral.dmg "https://github.com/iq-spiral-galaxy/spiral-buddy-blue/releases/latest/download/Spiral-Buddy-latest.dmg" && \
-          MOUNT=$(hdiutil attach -nobrowse /tmp/spiral.dmg | grep -o '/Volumes/.*' | head -1) && \
-          rm -rf '/Applications/Spiral Buddy.app' && \
-          cp -R "$MOUNT/Spiral Buddy.app" /Applications/ && \
+          curl -fL -o /tmp/spiral-red.dmg "https://github.com/iq-spiral-galaxy/spiral-buddy-red/releases/latest/download/Spiral-Buddy-Red-latest.dmg" && \
+          MOUNT=$(hdiutil attach -nobrowse /tmp/spiral-red.dmg | grep -o '/Volumes/.*' | head -1) && \
+          rm -rf '/Applications/Spiral Buddy Red.app' && \
+          cp -R "$MOUNT/Spiral Buddy Red.app" /Applications/ && \
           hdiutil detach -quiet "$MOUNT" && \
-          xattr -cr '/Applications/Spiral Buddy.app' && \
-          rm -f /tmp/spiral.dmg && \
-          open '/Applications/Spiral Buddy.app'
+          xattr -cr '/Applications/Spiral Buddy Red.app' && \
+          rm -f /tmp/spiral-red.dmg && \
+          open '/Applications/Spiral Buddy Red.app'
           ```
           </details>
 
@@ -222,13 +222,16 @@ jobs:
 
           ```powershell
           $ErrorActionPreference = "Stop"
-          Get-Process "Spiral Buddy" -EA SilentlyContinue | Stop-Process -Force
-          $exe = "$env:TEMP\spiral-buddy-setup.exe"
-          Invoke-WebRequest -Uri "https://github.com/iq-spiral-galaxy/spiral-buddy-blue/releases/latest/download/Spiral-Buddy-latest-Setup.exe" -OutFile $exe
+          Get-Process "Spiral Buddy Red" -EA SilentlyContinue | Stop-Process -Force
+          $exe = "$env:TEMP\spiral-buddy-red-setup.exe"
+          Invoke-WebRequest -Uri "https://github.com/iq-spiral-galaxy/spiral-buddy-red/releases/latest/download/Spiral-Buddy-Red-latest-Setup.exe" -OutFile $exe
           Start-Process -FilePath $exe -ArgumentList "/S" -Wait
           Remove-Item $exe -Force
-          $app = "$env:LOCALAPPDATA\Programs\spiral-buddy\Spiral Buddy.exe"
-          if (Test-Path $app) { Start-Process $app }
+          $candidates = @(
+            "$env:LOCALAPPDATA\Programs\spiral-buddy-red\Spiral Buddy Red.exe",
+            "$env:LOCALAPPDATA\Programs\Spiral Buddy Red\Spiral Buddy Red.exe"
+          )
+          foreach ($app in $candidates) { if (Test-Path $app) { Start-Process $app; break } }
           ```
           </details>
 
@@ -236,9 +239,9 @@ jobs:
           <summary>🐧 <strong>Linux — AppImage</strong></summary>
 
           ```bash
-          curl -fL -o ~/SpiralBuddy.AppImage "https://github.com/iq-spiral-galaxy/spiral-buddy-blue/releases/latest/download/Spiral-Buddy-latest.AppImage"
-          chmod +x ~/SpiralBuddy.AppImage
-          ~/SpiralBuddy.AppImage
+          curl -fL -o ~/SpiralBuddyRed.AppImage "https://github.com/iq-spiral-galaxy/spiral-buddy-red/releases/latest/download/Spiral-Buddy-Red-latest.AppImage"
+          chmod +x ~/SpiralBuddyRed.AppImage
+          ~/SpiralBuddyRed.AppImage
           ```
           </details>
 
@@ -248,10 +251,10 @@ jobs:
 
           | OS | 파일 |
           |---|---|
-          | macOS Apple Silicon | `Spiral.Buddy-*-arm64.dmg` |
-          | macOS Intel | `Spiral.Buddy-*.dmg` (arm64 아닌 것) |
-          | Windows | `Spiral.Buddy.Setup.*.exe` |
-          | Linux | `Spiral.Buddy-*.AppImage` |
+          | macOS Apple Silicon | `Spiral.Buddy.Red-*-arm64.dmg` |
+          | macOS Intel | `Spiral.Buddy.Red-*.dmg` (arm64 아닌 것) |
+          | Windows | `Spiral.Buddy.Red.Setup.*.exe` |
+          | Linux | `Spiral.Buddy.Red-*.AppImage` |
 
           ## ⚠️ macOS — "손상됨" 경고가 뜨면
 
@@ -259,7 +262,7 @@ jobs:
           위 한 줄 명령은 `xattr -cr`이 포함되어 자동 해결됩니다. 수동으로 받았다면:
 
           ```bash
-          xattr -cr "/Applications/Spiral Buddy.app"
+          xattr -cr "/Applications/Spiral Buddy Red.app"
           ```
 
           ## ⚠️ Windows — SmartScreen 경고가 뜨면
@@ -271,12 +274,11 @@ jobs:
           1. 본인 OS 파일 다운로드 → 더블클릭
           2. Setup wizard에서 **API 키** + **Obsidian Vault 경로** 입력
              - Vault는 흔한 위치에서 자동 감지됨 (클릭 한 번)
-          3. (선택) **"iq-dev-lab 38개 자동 다운로드"** 카드 클릭 → 부모 폴더 선택 → 1~5분 대기
-          4. "시작하기" → 메인 앱
+          3. "시작하기" → 메인 앱. 로컬 로드맵 폴더를 워크스페이스로 추가해 학습 시작
 
           ## 자세한 안내
 
-          [README](https://github.com/iq-spiral-galaxy/spiral-buddy-blue/blob/main/README.md)
+          [README](https://github.com/iq-spiral-galaxy/spiral-buddy-red/blob/main/README.md)
           EOF
           # ${TAG} 치환
           sed -i "s/\${TAG_PLACEHOLDER}/${TAG}/g" NOTES.md

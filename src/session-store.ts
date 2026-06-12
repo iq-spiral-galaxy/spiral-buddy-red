@@ -76,12 +76,12 @@ const sessions = new Map<string, ActiveSession>();
 // 복원해두면 기존 resume 흐름(GET /session/:id)이 그대로 동작.
 //
 // 저장 위치: SPIRAL_SESSION_DIR (Electron이 userData/sessions/<workspace>
-// 주입) 또는 기본 ~/.spiral-buddy/sessions.
+// 주입) 또는 기본 ~/.spiral-buddy-red/sessions.
 // ─────────────────────────────────────────────────────────────
 
 const SESSION_DIR =
   process.env.SPIRAL_SESSION_DIR?.trim() ||
-  path.join(os.homedir(), ".spiral-buddy", "sessions");
+  path.join(os.homedir(), ".spiral-buddy-red", "sessions");
 
 /** 이보다 오래된 snapshot은 복원하지 않고 삭제 (클라이언트 paused 최대 10개 유지와 별개의 안전망). */
 const SESSION_MAX_AGE_MS = 14 * 24 * 60 * 60 * 1000;

@@ -45,13 +45,13 @@ async function main() {
 
   if (!config.vaultPath) {
     process.stderr.write(
-      "[iq-spiral-buddy MCP] fatal: SPIRAL_VAULT_PATH must be set\n",
+      "[spiral-buddy-red MCP] fatal: SPIRAL_VAULT_PATH must be set\n",
     );
     process.exit(1);
   }
   if (!config.roadmapRoot && !config.curatedOrg) {
     process.stderr.write(
-      "[iq-spiral-buddy MCP] fatal: SPIRAL_ROADMAP_ROOT or SPIRAL_CURATED_ORG must be set\n",
+      "[spiral-buddy-red MCP] fatal: SPIRAL_ROADMAP_ROOT or SPIRAL_CURATED_ORG must be set\n",
     );
     process.exit(1);
   }
@@ -98,7 +98,7 @@ async function main() {
   }
 
   const server = new McpServer({
-    name: "iq-spiral-buddy",
+    name: "spiral-buddy-red",
     version: "0.3.0",
   });
 
@@ -582,7 +582,7 @@ async function main() {
       },
     },
     async ({ relative_path }) => {
-      const filePath = path.join(vaultPath, "spiral-buddy", relative_path);
+      const filePath = path.join(vaultPath, "spiral-buddy-red", relative_path);
       try {
         const content = await fs.readFile(filePath, "utf-8");
         return { content: [{ type: "text", text: content }] };
@@ -655,7 +655,7 @@ async function main() {
       const { missing, patchedBody } = validateAndPatchSections(body);
 
       const relatedAbs = (related_note_paths ?? []).map((rp) =>
-        path.join(vaultPath, "spiral-buddy", rp),
+        path.join(vaultPath, "spiral-buddy-red", rp),
       );
 
       // roadmap.id (예: "unit-testing/anatomy-of-good-tests") → repo + roadmap path
@@ -918,7 +918,7 @@ async function main() {
   const local = roadmaps.filter((r) => r.source === "local").length;
   const curated = roadmaps.filter((r) => r.source === "curated").length;
   process.stderr.write(
-    `[iq-spiral-buddy MCP] connected (v0.3.0)\n` +
+    `[spiral-buddy-red MCP] connected (v0.3.0)\n` +
       `  roadmap root: ${config.roadmapRoot ?? "(unset)"}\n` +
       `  curated org:  ${config.curatedOrg ?? "(disabled)"}\n` +
       `  vault:        ${vaultPath}\n` +
@@ -928,7 +928,7 @@ async function main() {
 
 main().catch((err) => {
   process.stderr.write(
-    `[iq-spiral-buddy MCP] fatal: ${err instanceof Error ? err.message : String(err)}\n`,
+    `[spiral-buddy-red MCP] fatal: ${err instanceof Error ? err.message : String(err)}\n`,
   );
   process.exit(1);
 });
