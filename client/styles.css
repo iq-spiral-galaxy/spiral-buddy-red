@@ -1,16 +1,16 @@
 :root {
-  --bg: #0d1117;
-  --bg-elev: #161b22;
-  --bg-elev-2: #1f242c;
-  --border: #30363d;
-  --border-soft: #21262d;
+  --bg: #170e0d;
+  --bg-elev: #221716;
+  --bg-elev-2: #2c201f;
+  --border: #3d3130;
+  --border-soft: #2d2221;
   --text: #f3e8e6;
   --text-dim: #9ba3ad;
   --text-faint: #6e7681;
   --accent: #ff8f7e;
   --accent-2: #f6c294;
   --user: #6b352d;
-  --assistant: #1c2128;
+  --assistant: #281d1c;
   --success: #3fb950;
   --error: #f85149;
   --font-sans:
@@ -912,7 +912,7 @@ button:disabled {
 button.primary {
   background: var(--accent);
   border-color: var(--accent);
-  color: #0a1f24;
+  color: #240c0a;
   font-weight: 600;
 }
 
@@ -1850,8 +1850,8 @@ body.light-mode .domain-header:hover {
   border-bottom: 1px solid var(--border);
   background: linear-gradient(
     180deg,
-    rgba(22, 27, 34, 0.95) 0%,
-    rgba(22, 27, 34, 0.85) 100%
+    rgba(34, 23, 22, 0.95) 0%,
+    rgba(34, 23, 22, 0.85) 100%
   );
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -1947,7 +1947,7 @@ body.light-mode .domain-header:hover {
 
 .action-btn.end {
   background: linear-gradient(135deg, #ff8f7e 0%, #ff745f 100%);
-  color: #0d1117;
+  color: #170e0d;
   border-color: transparent;
 }
 
@@ -2169,7 +2169,7 @@ button.primary {
   min-width: 92px;
   padding: 12px 18px;
   background: linear-gradient(135deg, #ff8f7e 0%, #ff745f 100%);
-  color: #0d1117;
+  color: #170e0d;
   border: none;
   border-radius: 12px;
   font-family: var(--font-sans);
@@ -2444,7 +2444,7 @@ button.primary {
 /* 다음 챕터 — 메인 CTA (그라데이션) */
 .end-action-btn.next-chapter-btn {
   background: linear-gradient(135deg, #ff8f7e 0%, #ff745f 60%, #f6c294 100%);
-  color: #0d1117;
+  color: #170e0d;
   border-color: transparent;
   box-shadow: 0 4px 14px rgba(255, 143, 126, 0.28);
   padding: 10px 18px;
@@ -2714,7 +2714,7 @@ body.sidebar-collapsed .messages {
 }
 
 .workspace-current:hover {
-  background: var(--bg-elev-3, #25252c);
+  background: var(--bg-elev-3, #2c2625);
   border-color: var(--accent);
 }
 
@@ -2840,8 +2840,8 @@ body.sidebar-collapsed .messages {
   white-space: nowrap;
 }
 
-.settings-save-btn:hover { background: var(--bg-elev-3, #25252c); }
-.settings-save-btn.primary { background: var(--accent); color: #0e0e11; border-color: var(--accent); font-weight: 600; }
+.settings-save-btn:hover { background: var(--bg-elev-3, #2c2625); }
+.settings-save-btn.primary { background: var(--accent); color: #110e0e; border-color: var(--accent); font-weight: 600; }
 
 .settings-hint {
   font-size: 11px;
@@ -2994,7 +2994,7 @@ body.sidebar-collapsed .messages {
 .settings-actions button.primary {
   background: var(--accent);
   border-color: var(--accent);
-  color: #0e0e11;
+  color: #110e0e;
   font-weight: 600;
 }
 
@@ -3153,7 +3153,7 @@ body.sidebar-collapsed .messages {
 }
 
 .trash-depth {
-  background: var(--bg-elev-3, #25252c);
+  background: var(--bg-elev-3, #2c2625);
   color: var(--accent-2, #f6c294);
   padding: 1px 5px;
   border-radius: 3px;
@@ -3416,11 +3416,11 @@ body.sidebar-collapsed .messages {
    ============================================================ */
 
 :root {
-  --bg: #080a0f;
-  --bg-elev-1: #10141b;
-  --bg-elev: #11161e;
-  --bg-elev-2: #171d27;
-  --bg-elev-3: #202735;
+  --bg: #0f0908;
+  --bg-elev-1: #1b1110;
+  --bg-elev: #1e1211;
+  --bg-elev-2: #271817;
+  --bg-elev-3: #352220;
   --border: rgba(148, 169, 190, 0.2);
   --border-soft: rgba(148, 169, 190, 0.12);
   --text: #f8eeed;
@@ -3435,9 +3435,9 @@ body.sidebar-collapsed .messages {
   --danger: #ff8b86;
   --danger-bg: rgba(255, 128, 122, 0.13);
   --user: linear-gradient(145deg, rgba(120, 58, 48, 0.88), rgba(113, 57, 48, 0.92));
-  --assistant: rgba(17, 22, 30, 0.82);
-  --surface-glass: rgba(16, 21, 29, 0.72);
-  --surface-glass-strong: rgba(20, 27, 37, 0.9);
+  --assistant: rgba(30, 18, 17, 0.82);
+  --surface-glass: rgba(29, 17, 16, 0.72);
+  --surface-glass-strong: rgba(37, 21, 20, 0.9);
   --shadow-soft: 0 18px 54px rgba(0, 0, 0, 0.34);
   --shadow-glow: 0 0 34px rgba(255, 154, 138, 0.16);
 }
@@ -3445,9 +3445,9 @@ body.sidebar-collapsed .messages {
 html,
 body {
   background:
-    linear-gradient(150deg, rgba(255, 154, 138, 0.1) 0%, rgba(8, 10, 15, 0) 34%),
-    linear-gradient(28deg, rgba(255, 213, 138, 0.07) 0%, rgba(8, 10, 15, 0) 30%),
-    linear-gradient(180deg, #090c12 0%, #0a0d13 48%, #080a0f 100%);
+    linear-gradient(150deg, rgba(255, 154, 138, 0.1) 0%, rgba(15, 9, 8, 0) 34%),
+    linear-gradient(28deg, rgba(255, 213, 138, 0.07) 0%, rgba(15, 9, 8, 0) 30%),
+    linear-gradient(180deg, #120a09 0%, #130b0a 48%, #0f0908 100%);
 }
 
 body {
@@ -3489,7 +3489,7 @@ body > * {
 
 #sidebar {
   background:
-    linear-gradient(180deg, rgba(18, 24, 33, 0.96), rgba(10, 13, 19, 0.98)),
+    linear-gradient(180deg, rgba(33, 19, 18, 0.96), rgba(19, 11, 10, 0.98)),
     var(--bg-elev);
   border-right: 1px solid rgba(255, 154, 138, 0.16);
   box-shadow:
@@ -3536,7 +3536,7 @@ body.sidebar-resizing #sidebar-resizer {
   border-radius: 50%;
   background:
     linear-gradient(145deg, rgba(255, 154, 138, 0.1), rgba(255, 208, 167, 0.08)),
-    rgba(10, 13, 19, 0.72);
+    rgba(19, 11, 10, 0.72);
   box-shadow:
     0 0 18px rgba(255, 154, 138, 0.18),
     inset 0 0 14px rgba(255, 154, 138, 0.075),
@@ -3591,7 +3591,7 @@ body.sidebar-resizing #sidebar-resizer {
   background:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ff9a8a' stroke-width='2.5' stroke-linecap='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") right 10px center / 12px 12px no-repeat,
     linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent),
-    rgba(20, 27, 37, 0.88);
+    rgba(37, 21, 20, 0.88);
 }
 
 .model-select,
@@ -3635,7 +3635,7 @@ button,
   border-radius: 8px;
   background:
     linear-gradient(145deg, rgba(255, 154, 138, 0.11), rgba(255, 208, 167, 0.07) 52%, rgba(255, 213, 138, 0.045)),
-    rgba(11, 15, 22, 0.78);
+    rgba(22, 12, 11, 0.78);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.04),
     0 12px 30px rgba(0, 0, 0, 0.2);
@@ -3658,7 +3658,7 @@ button.primary,
 .modal-btn.primary {
   background: linear-gradient(135deg, #ff9a8a 0%, #b7f3ef 52%, #ffd58a 100%);
   border-color: transparent;
-  color: #071016;
+  color: #160807;
   box-shadow:
     0 8px 22px rgba(255, 154, 138, 0.18),
     inset 0 1px 0 rgba(255, 255, 255, 0.42);
@@ -3680,7 +3680,7 @@ button.primary:hover:not(:disabled),
 .roadmap-current {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent),
-    rgba(20, 27, 37, 0.86);
+    rgba(37, 21, 20, 0.86);
 }
 
 .roadmap-current .roadmap-name,
@@ -3692,7 +3692,7 @@ button.primary:hover:not(:disabled),
 
 .roadmap-group-title,
 .curated-available-header {
-  background: rgba(6, 8, 12, 0.26);
+  background: rgba(12, 7, 6, 0.26);
   color: #7f909c;
 }
 
@@ -3730,7 +3730,7 @@ button.primary:hover:not(:disabled),
 
 .category-body,
 .sub-roadmap-item {
-  background: rgba(7, 10, 15, 0.24);
+  background: rgba(15, 8, 7, 0.24);
 }
 
 .cat-count,
@@ -3741,7 +3741,7 @@ button.primary:hover:not(:disabled),
 #current-chapter .depth,
 #current-chapter .roadmap-badge {
   border: 1px solid rgba(148, 169, 190, 0.14);
-  background: rgba(10, 14, 20, 0.54);
+  background: rgba(20, 11, 10, 0.54);
   border-radius: 999px;
 }
 
@@ -3788,7 +3788,7 @@ button.primary:hover:not(:disabled),
   position: relative;
   grid-template-rows: auto minmax(0, 1fr) auto auto;
   background:
-    linear-gradient(180deg, rgba(15, 20, 28, 0.28), rgba(8, 10, 15, 0.54)),
+    linear-gradient(180deg, rgba(28, 16, 15, 0.28), rgba(15, 9, 8, 0.54)),
     transparent;
   /* v0.5.63 — body grid의 1fr 컬럼으로서 항상 grid track 폭에 맞춤.
    * 자식(composer, messages, topbar)이 content-based로 늘어나 grid track을
@@ -3816,8 +3816,8 @@ button.primary:hover:not(:disabled),
   padding: 16px 28px;
   border-bottom: 1px solid rgba(255, 154, 138, 0.13);
   background:
-    linear-gradient(180deg, rgba(15, 20, 28, 0.86), rgba(12, 16, 23, 0.68)),
-    rgba(8, 10, 15, 0.72);
+    linear-gradient(180deg, rgba(28, 16, 15, 0.86), rgba(23, 13, 12, 0.68)),
+    rgba(15, 9, 8, 0.72);
   box-shadow:
     0 16px 42px rgba(0, 0, 0, 0.18),
     inset 0 -1px 0 rgba(255, 255, 255, 0.03);
@@ -3844,7 +3844,7 @@ button.primary:hover:not(:disabled),
 }
 
 .sidebar-toggle {
-  background: rgba(20, 27, 37, 0.82);
+  background: rgba(37, 21, 20, 0.82);
   border-color: rgba(148, 169, 190, 0.18);
 }
 
@@ -3876,7 +3876,7 @@ button.primary:hover:not(:disabled),
 .action-btn.end,
 .send-btn {
   background: linear-gradient(135deg, #ff9a8a 0%, #9ff1e5 54%, #ffd58a 100%);
-  color: #071016;
+  color: #160807;
   box-shadow:
     0 9px 28px rgba(255, 154, 138, 0.18),
     inset 0 1px 0 rgba(255, 255, 255, 0.42);
@@ -3936,7 +3936,7 @@ button.primary:hover:not(:disabled),
 }
 
 .content pre {
-  background: rgba(5, 8, 12, 0.78);
+  background: rgba(12, 6, 5, 0.78);
   border-color: rgba(148, 169, 190, 0.16);
   border-radius: 8px;
 }
@@ -3955,13 +3955,13 @@ button.primary:hover:not(:disabled),
   padding: 16px 24px 18px;
   border-top: 1px solid rgba(255, 154, 138, 0.13);
   background:
-    linear-gradient(180deg, rgba(17, 22, 30, 0.56), rgba(12, 16, 23, 0.9)),
-    rgba(8, 10, 15, 0.8);
+    linear-gradient(180deg, rgba(30, 18, 17, 0.56), rgba(23, 13, 12, 0.9)),
+    rgba(15, 9, 8, 0.8);
   box-shadow: 0 -14px 42px rgba(0, 0, 0, 0.18);
 }
 
 #input {
-  background: rgba(18, 24, 33, 0.88);
+  background: rgba(33, 19, 18, 0.88);
   border-color: rgba(148, 169, 190, 0.18);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.035),
@@ -3969,11 +3969,11 @@ button.primary:hover:not(:disabled),
 }
 
 #input:disabled {
-  background: rgba(10, 14, 20, 0.72);
+  background: rgba(20, 11, 10, 0.72);
 }
 
 .send-btn:disabled {
-  background: rgba(18, 24, 33, 0.82);
+  background: rgba(33, 19, 18, 0.82);
   color: #6f7e89;
   border: 1px solid rgba(148, 169, 190, 0.16);
   box-shadow: none;
@@ -3982,12 +3982,12 @@ button.primary:hover:not(:disabled),
 .status-bar {
   position: relative;
   z-index: 2;
-  background: rgba(8, 10, 15, 0.9);
+  background: rgba(15, 9, 8, 0.9);
   border-top: 1px solid rgba(148, 169, 190, 0.1);
 }
 
 .modal-overlay {
-  background: rgba(3, 5, 8, 0.66);
+  background: rgba(8, 3, 3, 0.66);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -3995,7 +3995,7 @@ button.primary:hover:not(:disabled),
 .modal {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.045), transparent),
-    rgba(17, 22, 30, 0.96);
+    rgba(30, 18, 17, 0.96);
   box-shadow:
     0 28px 80px rgba(0, 0, 0, 0.55),
     0 0 42px rgba(255, 154, 138, 0.08),
@@ -4016,7 +4016,7 @@ button.primary:hover:not(:disabled),
 }
 
 .trash-open-btn {
-  background: rgba(13, 17, 24, 0.44);
+  background: rgba(24, 14, 13, 0.44);
   border-color: rgba(148, 169, 190, 0.13);
 }
 
@@ -4026,7 +4026,7 @@ button.primary:hover:not(:disabled),
 }
 
 .trash-item {
-  background: rgba(20, 27, 37, 0.72);
+  background: rgba(37, 21, 20, 0.72);
 }
 
 .activity-cell {
@@ -4068,7 +4068,7 @@ button.primary:hover:not(:disabled),
 .end-progress-card {
   background:
     linear-gradient(145deg, rgba(255, 154, 138, 0.11), rgba(255, 208, 167, 0.055)),
-    rgba(17, 22, 30, 0.94);
+    rgba(30, 18, 17, 0.94);
   border-color: rgba(255, 154, 138, 0.42);
   box-shadow:
     0 18px 48px rgba(0, 0, 0, 0.24),
@@ -4144,7 +4144,7 @@ button.primary:hover:not(:disabled),
   align-items: center;
   gap: 7px;
   padding: 10px 12px 7px;
-  background: rgba(5, 8, 13, 0.3);
+  background: rgba(13, 6, 5, 0.3);
 }
 
 .group-icon {
@@ -4171,7 +4171,7 @@ button.primary:hover:not(:disabled),
   padding: 9px 12px;
   gap: 8px;
   border-left: 0;
-  background: rgba(11, 16, 24, 0.24);
+  background: rgba(24, 12, 11, 0.24);
 }
 
 .category-header::before {
@@ -4247,7 +4247,7 @@ button.primary:hover:not(:disabled),
 }
 
 .category-body {
-  background: rgba(5, 8, 13, 0.22);
+  background: rgba(13, 6, 5, 0.22);
 }
 
 .local-repo {
@@ -4258,7 +4258,7 @@ button.primary:hover:not(:disabled),
   min-height: 45px;
   padding: 7px 12px 7px 25px;
   gap: 9px;
-  background: rgba(8, 12, 18, 0.14);
+  background: rgba(18, 9, 8, 0.14);
 }
 
 .repo-header:hover {
@@ -4347,7 +4347,7 @@ button.primary:hover:not(:disabled),
   border-radius: 9px;
   background:
     linear-gradient(140deg, rgba(159, 179, 193, 0.055), rgba(213, 160, 111, 0.025)),
-    rgba(17, 23, 32, 0.78);
+    rgba(32, 18, 17, 0.78);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.04),
     0 10px 28px rgba(0, 0, 0, 0.14);
@@ -4356,7 +4356,7 @@ button.primary:hover:not(:disabled),
 .workspace-current:hover {
   background:
     linear-gradient(140deg, rgba(159, 179, 193, 0.08), rgba(213, 160, 111, 0.04)),
-    rgba(20, 28, 39, 0.86);
+    rgba(39, 22, 20, 0.86);
   border-color: rgba(159, 179, 193, 0.3);
   box-shadow:
     0 0 18px rgba(159, 179, 193, 0.07),
@@ -4372,7 +4372,7 @@ button.primary:hover:not(:disabled),
   border-radius: 7px;
   background:
     linear-gradient(145deg, rgba(159, 179, 193, 0.09), rgba(213, 160, 111, 0.035)),
-    rgba(7, 11, 17, 0.66);
+    rgba(17, 8, 7, 0.66);
   color: #a9bac5;
   box-shadow:
     0 4px 14px rgba(0, 0, 0, 0.12),
@@ -4403,7 +4403,7 @@ button.primary:hover:not(:disabled),
   border-radius: 9px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent),
-    rgba(13, 18, 26, 0.96);
+    rgba(26, 14, 13, 0.96);
   box-shadow:
     0 16px 40px rgba(0, 0, 0, 0.24),
     inset 0 1px 0 rgba(255, 255, 255, 0.035);
@@ -4433,7 +4433,7 @@ button.primary:hover:not(:disabled),
 
 .lookup-panel {
   border-left: 1px solid var(--border, rgba(148, 169, 190, 0.22));
-  background: var(--bg-elev, #121821);
+  background: var(--bg-elev, #211312);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -4473,7 +4473,7 @@ button.primary:hover:not(:disabled),
 }
 
 .lookup-panel-mini:hover {
-  background: var(--bg-elev-2, #19212c);
+  background: var(--bg-elev-2, #2c1b19);
   color: var(--text, #f5eeed);
 }
 
@@ -4488,7 +4488,7 @@ button.primary:hover:not(:disabled),
 }
 
 .lookup-panel-close:hover {
-  background: var(--bg-elev-2, #19212c);
+  background: var(--bg-elev-2, #2c1b19);
   color: var(--text, #f5eeed);
 }
 
@@ -4619,7 +4619,7 @@ body.light-mode .lookup-tool-context {
 }
 
 .lookup-card {
-  background: var(--bg-elev-2, #19212c);
+  background: var(--bg-elev-2, #2c1b19);
   border: 1px solid var(--border-soft, rgba(148, 169, 190, 0.12));
   border-radius: 8px;
   padding: 10px 12px;
@@ -4643,7 +4643,7 @@ body.light-mode .lookup-tool-context {
 }
 
 .lookup-card-depth {
-  background: var(--bg-elev, #121821);
+  background: var(--bg-elev, #211312);
   color: var(--accent, #a9bac5);
   padding: 1px 6px;
   border-radius: 4px;
@@ -4659,7 +4659,7 @@ body.light-mode .lookup-tool-context {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  background: var(--bg-elev, #121821);
+  background: var(--bg-elev, #211312);
   padding: 1px 6px;
   border-radius: 4px;
 }
@@ -4691,7 +4691,7 @@ body.light-mode .lookup-tool-context {
 }
 
 .lookup-card-act:hover {
-  background: var(--bg-elev, #121821);
+  background: var(--bg-elev, #211312);
   color: var(--text, #f5eeed);
 }
 
@@ -4728,7 +4728,7 @@ body.light-mode .lookup-tool-context {
 }
 
 .lookup-card-body code {
-  background: var(--bg-elev, #121821);
+  background: var(--bg-elev, #211312);
   padding: 1px 5px;
   border-radius: 3px;
   font-family: var(--font-mono, ui-monospace, monospace);
@@ -4736,7 +4736,7 @@ body.light-mode .lookup-tool-context {
 }
 
 .lookup-card-body pre {
-  background: var(--bg-elev, #121821);
+  background: var(--bg-elev, #211312);
   border-radius: 6px;
   padding: 8px 10px;
   overflow-x: auto;
@@ -4772,8 +4772,8 @@ body.light-mode .lookup-tool-context {
   padding: 4px;
   background: linear-gradient(
     180deg,
-    rgba(26, 33, 48, 0.96),
-    rgba(18, 24, 33, 0.96)
+    rgba(48, 28, 26, 0.96),
+    rgba(33, 19, 18, 0.96)
   );
   border: 1px solid rgba(148, 169, 190, 0.22);
   border-radius: 9px;
@@ -4972,7 +4972,7 @@ body.lookup-fullscreen .lookup-panel-mini.icon-btn svg {
 .activity-tooltip {
   position: fixed;
   z-index: 2000;
-  background: rgba(15, 19, 28, 0.97);
+  background: rgba(28, 16, 15, 0.97);
   color: var(--text, #f5eeed);
   border: 1px solid rgba(148, 169, 190, 0.22);
   border-radius: 6px;
@@ -4997,7 +4997,7 @@ body.lookup-fullscreen .lookup-panel-mini.icon-btn svg {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: var(--bg-elev, #121821);
+  background: var(--bg-elev, #211312);
   padding: 2px 7px;
   border-radius: 4px;
   font-weight: 600;
@@ -5185,7 +5185,7 @@ body.lookup-fullscreen .lookup-panel-mini.icon-btn svg {
   font-size: 9px;
 }
 
-/* ───────────────────── 설정 → iq-dev-lab 다운로드 카드 ──────────────────── */
+/* ───────────────────── 설정 → iq-ai-lab 다운로드 카드 ──────────────────── */
 
 .settings-divider {
   display: flex;
@@ -5257,7 +5257,7 @@ body.lookup-fullscreen .lookup-panel-mini.icon-btn svg {
   border: 1px solid rgba(169, 186, 197, 0.22);
   border-radius: 8px;
   color: var(--accent, #a9bac5);
-  background: rgba(7, 11, 17, 0.66);
+  background: rgba(17, 8, 7, 0.66);
   flex-shrink: 0;
 }
 
@@ -5438,7 +5438,7 @@ body.lookup-fullscreen .lookup-panel-mini.icon-btn svg {
   align-items: center;
   justify-content: center;
   border-radius: 8px !important;
-  background: rgba(20, 27, 37, 0.82) !important;
+  background: rgba(37, 21, 20, 0.82) !important;
   color: var(--text-dim);
   border: 1px solid rgba(148, 169, 190, 0.18) !important;
   flex-shrink: 0;
@@ -5639,7 +5639,7 @@ body.composer-resizing {
   left: 50%;
   transform: translate(-50%, -50%);
   width: min(480px, calc(100vw - 40px));
-  background: var(--bg-elev, #121821);
+  background: var(--bg-elev, #211312);
   border: 1px solid rgba(255, 208, 167, 0.4);
   border-radius: 12px;
   padding: 16px;
@@ -5725,7 +5725,7 @@ body.composer-resizing {
 
 .lookup-question-submit {
   background: linear-gradient(135deg, #ffd0a7 0%, #f6c294 100%);
-  color: #1a1424;
+  color: #241514;
   border: none;
   padding: 7px 14px;
   border-radius: 7px;
@@ -5755,7 +5755,7 @@ body.composer-resizing {
 .lookup-direct-form {
   border-top: 1px solid rgba(148, 169, 190, 0.12);
   padding: 10px 12px;
-  background: rgba(8, 10, 15, 0.55);
+  background: rgba(15, 9, 8, 0.55);
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -5851,7 +5851,7 @@ body.composer-resizing {
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #ff9a8a 0%, #f6c294 100%);
-  color: #071016;
+  color: #160807;
   border: none;
   padding: 0 12px;
   height: 34px;
@@ -5909,7 +5909,7 @@ body.composer-resizing {
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
-  background: var(--bg-elev-2, #19212c);
+  background: var(--bg-elev-2, #2c1b19);
   border: 1px solid var(--border, rgba(148, 169, 190, 0.18));
   border-radius: 10px;
   margin-bottom: 16px;
@@ -5958,7 +5958,7 @@ body.composer-resizing {
 
 .update-install-btn {
   background: linear-gradient(135deg, #ffd0a7 0%, #f6c294 100%);
-  color: #1a1424;
+  color: #241514;
   border: none;
   padding: 7px 14px;
   border-radius: 7px;
@@ -6184,7 +6184,7 @@ body.sidebar-collapsed:not(.lookup-open) .messages .message {
 .theme-toggle {
   display: inline-flex;
   gap: 6px;
-  background: var(--bg-elev-2, #19212c);
+  background: var(--bg-elev-2, #2c1b19);
   border: 1px solid var(--border, rgba(148, 169, 190, 0.18));
   border-radius: 10px;
   padding: 4px;
@@ -6234,7 +6234,7 @@ body.light-mode {
   --bg-elev-2: #f6efee;
   --border: #d4dae3;
   --border-soft: #e3e7ee;
-  --text: #1a2233;
+  --text: #331c1a;
   --text-dim: #4a5468;
   --text-faint: #7d8696;
   --accent: #eb3f25;      /* 빨강 (다크의 scarlet 자리) */
@@ -6262,7 +6262,7 @@ body.light-mode #sidebar {
 body.light-mode #topbar {
   background: linear-gradient(180deg, #ffffff 0%, #fdfafa 100%) !important;
   border-bottom: 1px solid var(--border) !important;
-  box-shadow: 0 1px 0 rgba(20, 30, 60, 0.04) !important;
+  box-shadow: 0 1px 0 rgba(60, 23, 20, 0.04) !important;
 }
 
 body.light-mode .lookup-panel {
@@ -6295,7 +6295,7 @@ body.light-mode .message.assistant {
 
 body.light-mode .message.user {
   background: var(--user);
-  color: #1a2233;
+  color: #331c1a;
 }
 
 body.light-mode .composer {
@@ -6413,7 +6413,7 @@ body.light-mode .lookup-card-depth[data-depth="deep"] .lookup-card-depth-icon { 
 /* ─── 7) 모달 / 팝오버 ─── */
 
 body.light-mode .modal-overlay {
-  background: rgba(30, 40, 60, 0.42);
+  background: rgba(60, 32, 30, 0.42);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
 }
@@ -6436,7 +6436,7 @@ body.light-mode .lookup-question-popover {
   background: #ffffff;
   border-color: rgba(247, 164, 92, 0.4);
   box-shadow:
-    0 18px 50px rgba(30, 40, 60, 0.18),
+    0 18px 50px rgba(60, 32, 30, 0.18),
     0 0 24px rgba(247, 164, 92, 0.12);
 }
 
@@ -6472,7 +6472,7 @@ body.light-mode .message.assistant pre,
 body.light-mode .lookup-card-body pre {
   background: #faf6f5;
   border: 1px solid var(--border-soft);
-  color: #1a2233;
+  color: #331c1a;
 }
 
 body.light-mode code {
@@ -6658,7 +6658,7 @@ body.light-mode .lookup-toolbar {
   border: 1px solid var(--border);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 8px 24px rgba(30, 40, 60, 0.12);
+  box-shadow: 0 8px 24px rgba(60, 32, 30, 0.12);
 }
 
 body.light-mode .lookup-tool-btn {
@@ -6785,7 +6785,7 @@ body.light-mode {
   --border-soft: #eee3e1;
 
   /* 텍스트 — 슬레이트 계열, 점진적 contrast */
-  --text: #0f172a;        /* slate-900: 본문 */
+  --text: #2a110f;        /* slate-900: 본문 */
   --text-dim: #475569;    /* slate-600: 보조 (still WCAG AA) */
   --text-faint: #8693a8;  /* slate-400+: placeholder/메타 */
 
@@ -6843,7 +6843,7 @@ body.light-mode .roadmap-current {
   background: #ffffff !important;
   border: 1px solid var(--border) !important;
   color: var(--text) !important;
-  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.02);
+  box-shadow: 0 1px 0 rgba(42, 17, 15, 0.02);
 }
 
 body.light-mode .workspace-current:hover,
@@ -6911,7 +6911,7 @@ body.light-mode .cat-name {
 
 body.light-mode .cat-count {
   color: var(--text-dim) !important;
-  background: rgba(15, 23, 42, 0.05) !important;
+  background: rgba(42, 17, 15, 0.05) !important;
   border-color: transparent !important;
   font-weight: 600;
 }
@@ -7071,7 +7071,7 @@ body.light-mode .message.assistant {
   background: #ffffff !important;
   border: 1px solid var(--border) !important;
   color: var(--text) !important;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 1px 2px rgba(42, 17, 15, 0.04);
 }
 
 body.light-mode .message.assistant .role,
@@ -7095,7 +7095,7 @@ body.light-mode .message.assistant code:not(pre code) {
 body.light-mode .message.assistant pre {
   background: #fbf7f6 !important;
   border: 1px solid var(--border-soft) !important;
-  color: #0f172a !important;
+  color: #2a110f !important;
 }
 
 body.light-mode .message.assistant strong {
@@ -7152,7 +7152,7 @@ body.light-mode .lookup-card {
   background: #ffffff !important;
   border: 1px solid var(--border) !important;
   color: var(--text) !important;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 1px 2px rgba(42, 17, 15, 0.04);
 }
 
 body.light-mode .lookup-card-head {
@@ -7226,7 +7226,7 @@ body.light-mode body.lookup-open .lookup-toggle-btn {
 /* ─── 모달 / 팝오버 / 검색 ─── */
 
 body.light-mode .modal-overlay {
-  background: rgba(15, 23, 42, 0.42) !important;
+  background: rgba(42, 17, 15, 0.42) !important;
 }
 
 body.light-mode .modal,
@@ -7238,7 +7238,7 @@ body.light-mode .add-workspace-modal {
   background: #ffffff !important;
   border: 1px solid var(--border) !important;
   color: var(--text) !important;
-  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.18) !important;
+  box-shadow: 0 18px 50px rgba(42, 17, 15, 0.18) !important;
 }
 
 body.light-mode .modal h3,
@@ -7282,7 +7282,7 @@ body.light-mode .modal-close {
 
 body.light-mode .modal-close:hover {
   color: var(--text) !important;
-  background: rgba(15, 23, 42, 0.06) !important;
+  background: rgba(42, 17, 15, 0.06) !important;
 }
 
 /* ─── Update banner ─── */
@@ -7391,7 +7391,7 @@ body.light-mode .refine-btn:hover:not(:disabled) {
 body.light-mode .lookup-toolbar {
   background: rgba(255, 255, 255, 0.96) !important;
   border: 1px solid var(--border) !important;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.16) !important;
+  box-shadow: 0 8px 24px rgba(42, 17, 15, 0.16) !important;
 }
 
 body.light-mode .lookup-tool-btn {
@@ -7505,7 +7505,7 @@ body.light-mode .feedback-btn {
 }
 
 body.light-mode .feedback-btn:hover {
-  background: rgba(15, 23, 42, 0.05) !important;
+  background: rgba(42, 17, 15, 0.05) !important;
   color: var(--text) !important;
 }
 
@@ -7561,7 +7561,7 @@ body.light-mode .settings-wizard-link {
 
 body.light-mode .settings-wizard-link:hover {
   color: var(--text) !important;
-  background: rgba(15, 23, 42, 0.04) !important;
+  background: rgba(42, 17, 15, 0.04) !important;
 }
 
 body.light-mode .wizard-link-icon {
@@ -7610,7 +7610,7 @@ body.light-mode .end-progress-card,
 body.light-mode .modal,
 body.light-mode #sidebar > .brand,
 body.light-mode #topbar {
-  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04) !important;
+  box-shadow: 0 1px 0 rgba(42, 17, 15, 0.04) !important;
 }
 
 /* ═══════════════════════════════════════════════════════════ */
@@ -7701,13 +7701,13 @@ body.light-mode .chapter-depth-pill.deletable:hover {
 }
 
 body.light-mode .chapter-depth-pill.empty {
-  background: rgba(15, 23, 42, 0.04) !important;
+  background: rgba(42, 17, 15, 0.04) !important;
   border-color: var(--border-soft) !important;
   color: var(--text-faint) !important;
 }
 
 body.light-mode .cat-count {
-  background: rgba(15, 23, 42, 0.05) !important;
+  background: rgba(42, 17, 15, 0.05) !important;
   color: var(--text-dim) !important;
   border-color: transparent !important;
 }
@@ -7782,8 +7782,8 @@ body.light-mode .message.assistant {
   background: #ffffff !important;
   border: 1px solid #eededc !important;
   box-shadow:
-    0 1px 2px rgba(15, 23, 42, 0.04),
-    0 8px 24px rgba(15, 23, 42, 0.03) !important;
+    0 1px 2px rgba(42, 17, 15, 0.04),
+    0 8px 24px rgba(42, 17, 15, 0.03) !important;
 }
 
 body.light-mode .message.assistant .role {
@@ -7795,7 +7795,7 @@ body.light-mode .message.assistant .role {
 body.light-mode .message.assistant pre {
   background: #fbf5f4 !important;
   border: 1px solid #eededc !important;
-  color: #0f172a !important;
+  color: #2a110f !important;
 }
 
 body.light-mode .message.assistant pre code {
@@ -7870,7 +7870,7 @@ body.light-mode .workspace-icon {
   border-color: var(--border) !important;
   color: var(--text-dim) !important;
   box-shadow:
-    0 1px 0 rgba(15, 23, 42, 0.04),
+    0 1px 0 rgba(42, 17, 15, 0.04),
     inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
 }
 
@@ -7980,7 +7980,7 @@ body.light-mode .trash-open-btn {
   background: #ffffff !important;
   border: 1px solid var(--border) !important;
   color: var(--text-dim) !important;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04) !important;
+  box-shadow: 0 1px 2px rgba(42, 17, 15, 0.04) !important;
 }
 
 body.light-mode .activity-open-btn .activity-streak {
@@ -8066,7 +8066,7 @@ body.light-mode .lookup-card .feedback-bar .feedback-btn:hover {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: var(--bg-elev-2, #19212c);
+  background: var(--bg-elev-2, #2c1b19);
   border: 1px solid var(--border, rgba(148, 169, 190, 0.3));
   color: var(--text-dim, #a6b2bb);
   cursor: pointer;
@@ -8086,7 +8086,7 @@ body.light-mode .lookup-card .feedback-bar .feedback-btn:hover {
 
 .scroll-bottom-btn:hover {
   background: var(--accent, #ff8f7e);
-  color: #0d1117;
+  color: #170e0d;
   transform: translateY(-2px);
 }
 
@@ -8100,7 +8100,7 @@ body.light-mode .scroll-bottom-btn {
   background: #ffffff;
   border-color: var(--border);
   color: var(--text-dim);
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.14);
+  box-shadow: 0 6px 18px rgba(42, 17, 15, 0.14);
 }
 
 body.light-mode .scroll-bottom-btn:hover {
@@ -8142,7 +8142,7 @@ body.light-mode .scroll-bottom-btn:hover {
 
 .paused-resume-btn {
   background: linear-gradient(135deg, #ff8f7e 0%, #f6c294 100%);
-  color: #0d1117;
+  color: #170e0d;
   border: none;
   padding: 6px 14px;
   border-radius: 7px;
@@ -8726,7 +8726,7 @@ body.light-mode .curated-target-use-ws:hover {
 
 .curated-domain-btn {
   background: var(--accent);
-  color: #0d1117;
+  color: #170e0d;
   border: 0;
   padding: 0 14px;
   border-radius: 7px;
@@ -8906,7 +8906,7 @@ body.light-mode .curated-domain-hint {
 .chapter-ai-popover {
   position: fixed;
   z-index: 9500;
-  background: var(--bg-elev-2, #1a2230);
+  background: var(--bg-elev-2, #301c1a);
   border: 1px solid var(--border, rgba(255, 255, 255, 0.10));
   border-radius: 12px;
   box-shadow:
@@ -9071,7 +9071,7 @@ body.light-mode .curated-domain-hint {
   padding: 8px 14px;
   font-size: 12.5px;
   font-weight: 600;
-  color: #0a0e14;
+  color: #140b0a;
   background: linear-gradient(
     135deg,
     var(--accent, #ff8f7e) 0%,
@@ -9183,26 +9183,26 @@ body.light-mode .chapter-ai-popover {
   background: #ffffff;
   border-color: rgba(0, 0, 0, 0.08);
   box-shadow:
-    0 16px 40px rgba(15, 23, 42, 0.16),
-    0 4px 12px rgba(15, 23, 42, 0.08);
+    0 16px 40px rgba(42, 17, 15, 0.16),
+    0 4px 12px rgba(42, 17, 15, 0.08);
 }
 
 body.light-mode .chapter-ai-popover-body {
-  color: #1a202c;
+  color: #2c1c1a;
 }
 
 body.light-mode .chapter-ai-summary {
-  color: #0f172a;
+  color: #2a110f;
   border-bottom-color: rgba(0, 0, 0, 0.08);
 }
 
 body.light-mode .chapter-ai-questions li {
-  color: #1a202c;
+  color: #2c1c1a;
 }
 
 body.light-mode .chapter-ai-prereq {
   background: rgba(255, 143, 126, 0.10);
-  color: #1a202c;
+  color: #2c1c1a;
 }
 
 body.light-mode .chapter-ai-start-btn {
@@ -9305,7 +9305,7 @@ body.light-mode .chapter-ai-btn:hover {
   opacity: 1;
 }
 
-/* 2) 사이드바 로고 — 라이트 모드에서 다크 원형 배경(rgba(10,13,19,.72))이
+/* 2) 사이드바 로고 — 라이트 모드에서 다크 원형 배경(rgba(19, 11, 10,.72))이
  * 흰 사이드바 위에 떠서 부자연스러웠음. 라이트 팔레트의 옅은 칩으로 교체,
  * 나선 stroke(파스텔)는 brightness를 낮춰 흰 배경에서도 보이게. */
 body.light-mode .logo-spiral {
@@ -9328,12 +9328,12 @@ body.light-mode .workspace-item {
   color: #475569 !important; /* slate-600 */
 }
 body.light-mode .workspace-item.active {
-  color: #0f172a !important; /* slate-900 — 현재 워크스페이스는 또렷하게 */
+  color: #2a110f !important; /* slate-900 — 현재 워크스페이스는 또렷하게 */
   font-weight: 600;
 }
 body.light-mode .workspace-item:hover {
   background: #f8efee !important;
-  color: #0f172a !important;
+  color: #2a110f !important;
 }
 body.light-mode .workspace-item.add {
   color: #64748b !important;
@@ -9341,7 +9341,7 @@ body.light-mode .workspace-item.add {
 body.light-mode .workspace-list {
   background: #ffffff !important;
   border-color: #cdd5e0 !important;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.10) !important;
+  box-shadow: 0 8px 24px rgba(42, 17, 15, 0.10) !important;
 }
 
 /* ═══════════════════ v0.5.84 — 메시지 컬럼 폭이 내용 따라 쪼그라드는 버그 ═══════════════════

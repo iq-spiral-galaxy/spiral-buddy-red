@@ -40,12 +40,16 @@ Blue와 같은 머신에 공존해야 하므로 아래를 안 바꾸면 **사용
 
 Phase 0 끝나면 `pnpm i && pnpm build`로 검증하고 첫 태그(v0.1.0) 전에 빌드 워크플로 동작 확인.
 
-## 콘텐츠 분기 (Phase 1)
+## ✅ 콘텐츠 분기 (Phase 1 — 대부분 완료: v0.2.0)
 
-- Blue의 curated org는 `iq-dev-lab`(개발 학습자료 38개 레포) — AI/수학용 콘텐츠 org는 아직 없음
-- 초기에는 `SPIRAL_DISABLE_CURATED=1` 또는 main.cjs의 curatedOrg 기본값 비우고 Local 로드맵만으로 시작
-- `data/curated-domains.json`은 개발 도메인 매핑이라 AI/수학용으로 재작성 필요 (콘텐츠 org 만든 후)
-- 시스템 프롬프트(src/session-store.ts SESSION_SYSTEM)를 AI/수학 학습 성격에 맞게 조정 검토
+- Curated org는 **`iq-ai-lab`** (AI/수학 deep-dive 48개 레포, Layer 0~6 구조, "Prove, don't memorize").
+  config.ts/main.cjs/setup/클라이언트의 기본값 모두 iq-ai-lab으로 교체 완료.
+- `data/curated-domains.json` — Layer 0(Mathematics)~6(Frontier LLM) 11개 도메인 + 트랙 프리셋 4종
+  (수학 코어/LLM/RL/전체)으로 재작성 완료. 레포 이름은 라이브 org와 교차 검증함.
+- 브랜드: 액센트 red/주황 + **배경도 딥 마룬 틴트** (v0.2.0, 사용자 확정 — "느낌 있는 배경").
+  녹색 배경은 Green 버디 몫.
+- 남은 일: 시스템 프롬프트(src/session-store.ts SESSION_SYSTEM)를 AI/수학(증명 중심) 성격에 맞게 조정 검토
+  — 단, 클라이언트에 LaTeX 렌더러가 없으므로 수식 표기 지시는 렌더링 지원과 함께 갈 것
 
 ## 물려받은 인프라 (바꾸지 말 것 — Blue에서 검증된 핵심)
 

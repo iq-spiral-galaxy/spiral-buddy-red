@@ -23,19 +23,19 @@ function assert(cond: unknown, msg: string) {
 
 // ─── 1. parseCuratedId
 console.log("\n[1] parseCuratedId");
-const p1 = parseCuratedId("curated:iq-dev-lab/redis-deep-dive");
+const p1 = parseCuratedId("curated:iq-ai-lab/transformer-deep-dive");
 assert(
-  p1?.org === "iq-dev-lab" && p1.repoName === "redis-deep-dive" && p1.subPath === "",
+  p1?.org === "iq-ai-lab" && p1.repoName === "transformer-deep-dive" && p1.subPath === "",
   "단순 형식 파싱",
 );
 
 const p2 = parseCuratedId(
-  "curated:iq-dev-lab/spring-deep-dive/ioc-container",
+  "curated:iq-ai-lab/rl-foundations-deep-dive/bellman-equations",
 );
 assert(
-  p2?.org === "iq-dev-lab" &&
-    p2.repoName === "spring-deep-dive" &&
-    p2.subPath === "ioc-container",
+  p2?.org === "iq-ai-lab" &&
+    p2.repoName === "rl-foundations-deep-dive" &&
+    p2.subPath === "bellman-equations",
   "sub-path 포함 파싱",
 );
 
@@ -61,10 +61,10 @@ await fs.writeFile(path.join(repo1Dir, "02-data.md"), "# Data");
 await fs.writeFile(path.join(repo1Dir, "03-memory.md"), "# Memory");
 
 // repo 2: sub-roadmap 있는 경우
-const repo2Dir = path.join(testOrgDir, "spring-deep-dive");
+const repo2Dir = path.join(testOrgDir, "rl-foundations-deep-dive");
 await fs.mkdir(repo2Dir, { recursive: true });
 await fs.writeFile(path.join(repo2Dir, "README.md"), "# Spring");
-const subDir1 = path.join(repo2Dir, "ioc-container");
+const subDir1 = path.join(repo2Dir, "bellman-equations");
 await fs.mkdir(subDir1, { recursive: true });
 await fs.writeFile(path.join(subDir1, "01-bean.md"), "# Bean");
 await fs.writeFile(path.join(subDir1, "02-context.md"), "# Context");
@@ -123,7 +123,7 @@ const installed = await listInstalledRepoNames(TEST_ORG);
 console.log(installed);
 assert(installed.length === 4, "디스크에 있는 4개 디렉토리 인식");
 assert(installed.includes("redis-deep-dive"), "redis-deep-dive 포함");
-assert(installed.includes("spring-deep-dive"), "spring-deep-dive 포함");
+assert(installed.includes("rl-foundations-deep-dive"), "spring-deep-dive 포함");
 
 // ─── 4. parseCuratedId 라운드트립
 console.log("\n[4] roadmap id → parseCuratedId 라운드트립");
@@ -136,8 +136,8 @@ for (const r of roadmaps) {
   }
   if (r.id === `curated:${TEST_ORG}/spring-deep-dive/ioc-container`) {
     assert(
-      parsed?.repoName === "spring-deep-dive" &&
-        parsed?.subPath === "ioc-container",
+      parsed?.repoName === "rl-foundations-deep-dive" &&
+        parsed?.subPath === "bellman-equations",
       "sub-path round-trip",
     );
   }

@@ -89,14 +89,40 @@ Red는 **AI와 수학**에 집중합니다:
 - 📐 **수학** — 해석학 · 선형대수 · 확률/통계 · 최적화, 증명을 따라가는 훈련
 - 🧠 **나선형 복습** — 같은 개념을 depth 1(첫 학습) → depth 2(복습) → depth 3(심화)로 반복하며 누적
 
-> 📦 AI/수학 전용 curated 학습 자료 org는 준비 중입니다. 현재는 **로컬 로드맵 폴더**(마크다운 트리)를 워크스페이스로 추가해 사용하세요.
+콘텐츠 소스는 [**IQ AI Lab**](https://github.com/iq-ai-lab) — *"Prove, don't memorize"* 를 모토로 수학적 증명으로 AI의 본질을 파고드는 딥다이브 연구소입니다.
+
+## 📚 iq-ai-lab 학습 자료 — Layer 0→6 / 48개 레포
+
+설정 모달에서 한 번에 받기. 레이어(도메인)별 또는 트랙 프리셋으로 선택 가능 — **이미 받은 레포는 자동 skip (incremental)**.
+
+| Layer | 도메인 | 주요 내용 / 레포 수 |
+|---|---|---|
+| 0 | 🧮 **Mathematics** | 선형대수 · 확률론 · 수리통계 · 볼록최적화 · 정보이론 · SDE · 함수해석 (10) |
+| 1 | 📐 **ML Theory** | PAC Learning · VC 차원 · 커널 · 베이지안 ML · 그래피컬 모델 (5) |
+| 2 | 🧠 **NN Theory** | 범용 근사 · 최적화 이론 · 일반화(NTK, Double Descent) · 정규화 (4) |
+| 3 | 🏗️ **Architectures** | CNN · RNN/LSTM · Transformer · GNN · 생성모델 (5) |
+| 4-A | 🤖 **RL** | 벨만 방정식 → Policy Gradient → TRPO/PPO/SAC → RL 이론 (6) |
+| 4-B | 🗣️ **LLM** | Scaling Law · RLHF/DPO · LoRA/MoE · KV Cache/vLLM (4) |
+| 4-C | 👁️ **CV & 3D** | ViT · Detection · Diffusion · NeRF/Gaussian Splatting (4) |
+| 4-D | 📝 **NLP** | Word2Vec/GloVe/BPE · BERT/GPT 전이학습 (2) |
+| 4-E | 🔊 **Audio** | STFT/Mel · CTC · Whisper · 신경 코덱 (1) |
+| 5 | ⚙️ **Systems** | PyTorch Internals · 분산 학습 · Efficient ML · 실험통계/MLOps (4) |
+| 6 | 🧭 **Frontier LLM** | Mechanistic Interpretability · Reasoning · RAG (3) |
+
+**트랙 프리셋** (Setup wizard + 설정 모달):
+- 🧮 **수학 코어부터** — Mathematics · ML Theory · NN Theory (19 repos)
+- 🗣️ **LLM 트랙** — Architectures · LLM · NLP · Frontier (14 repos)
+- 🤖 **RL 트랙** — NN Theory · Architectures · RL (15 repos)
+- 🧭 **전체 딥다이브** — Layer 0→6 전부 (48 repos)
 
 ---
 
 ## ✨ 주요 기능
 
 ### 🗺️ 로드맵 + 챕터 학습 흐름
-- **로컬 디렉토리** (사용자 폴더 트리) 로드맵 — README 안의 마크다운 링크 등장 순서를 sub-roadmap 학습 순서로 사용 (번호 prefix 없어도 OK)
+- **로컬 디렉토리** (사용자 폴더 트리) + **GitHub Curated** (`iq-ai-lab` 48개 deep-dive 레포) — 두 source 공존
+- **Layer 0→6 hierarchy** — Mathematics부터 Frontier LLM까지 선행 지식 순서대로
+- README 안의 마크다운 링크 등장 순서를 sub-roadmap 학습 순서로 사용 (번호 prefix 없어도 OK)
 - 멀티 워크스페이스 — 여러 학습 컨텍스트를 한 vault의 별도 폴더로 분리 (이름·경로 중복 자동 차단)
 
 ### 💬 버디와의 Socratic 학습 세션
@@ -143,7 +169,7 @@ Red는 **AI와 수학**에 집중합니다:
 
 ### 3. 학습 시작
 
-로컬 로드맵 폴더를 워크스페이스로 추가 → 좌측 사이드바에서 챕터 선택 → 버디와 대화 → `End & Save` 클릭 → 노트 보관함에 자동 생성.
+*(선택)* 트랙 프리셋으로 iq-ai-lab 레포 한 번에 받기 → 좌측 사이드바에서 챕터 선택 → 버디와 대화 → `End & Save` 클릭 → 노트 보관함에 자동 생성.
 
 ---
 
@@ -188,6 +214,7 @@ pnpm electron:build:linux  # Linux AppImage
 ANTHROPIC_API_KEY=sk-ant-...
 SPIRAL_VAULT_PATH=/Users/you/Documents/MyNotes
 SPIRAL_ROADMAP_ROOT=/path/to/your/roadmaps   # 선택
+SPIRAL_CURATED_ORG=iq-ai-lab                 # 선택 (기본값)
 SPIRAL_MODEL=claude-sonnet-4-6               # 선택
 ```
 
@@ -226,7 +253,7 @@ Claude Desktop 설정에 추가:
 - **휴지통**: `<vault>/spiral-buddy-red/.trash/` (30일 후 자동 청소)
 - **앱 설정**: `~/Library/Application Support/Spiral Buddy Red/spiral-buddy-config.json` (macOS)
 - **로그**: `~/Library/Logs/Spiral Buddy Red/server.log` (macOS)
-- **학습 자료**: 사용자가 지정한 폴더 (기본: vault 옆 `iq-spiral-buddy-red-data/<id>/`)
+- **학습 자료**: 사용자가 지정한 폴더 (예: `~/Documents/spiral/iq-ai-lab/<repo>`, git 워크스페이스 기본: vault 옆 `iq-spiral-buddy-red-data/<id>/`)
 
 재설치해도 위 데이터는 **모두 보존**됩니다.
 
@@ -253,7 +280,7 @@ client/                ─ 브라우저 SPA (vanilla JS + ESM)
 electron/              ─ Electron main · preload · setup wizard
 docs/                  ─ phase별 spec (Blue에서 물려받음)
 scripts/               ─ 통합 테스트, 일회성 도구
-data/curated-domains.json     ─ 도메인 hierarchy (AI/수학용으로 재작성 예정)
+data/curated-domains.json     ─ iq-ai-lab Layer 0→6 hierarchy + 트랙 프리셋
 ```
 
 ---
