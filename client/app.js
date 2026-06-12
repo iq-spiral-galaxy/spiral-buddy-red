@@ -3,7 +3,7 @@
 
 import { marked } from "https://esm.sh/marked@13.0.3";
 import { markedHighlight } from "https://esm.sh/marked-highlight@2.2.1";
-import markedKatex from "https://esm.sh/marked-katex-extension@5";
+import markedKatex from "https://esm.sh/marked-katex-extension@5.1.10";
 import hljs from "https://esm.sh/highlight.js@11.10.0";
 import DOMPurify from "https://esm.sh/dompurify@3.1.6";
 
@@ -4871,17 +4871,17 @@ const QUIZ_LEVELS = [
   },
   {
     level: 3,
-    label: "함정·엣지케이스",
+    label: "함정·반례",
     color: "orange",
     prompt:
-      "오늘 다룬 개념의 흔한 오해, 함정, 또는 엣지 케이스를 찌르는 날카로운 질문 2개를 내줘. 답은 알려주지 마.",
+      "오늘 다룬 개념의 흔한 오해, 함정, 또는 가정이 무너지는 반례를 찌르는 날카로운 질문 2개를 내줘. 답은 알려주지 마.",
   },
   {
     level: 4,
-    label: "종합 시나리오",
+    label: "종합 문제",
     color: "gold",
     prompt:
-      "오늘 다룬 개념 + 관련된 사전 지식까지 엮어서 답해야 하는, 실무에서 마주칠 만한 종합 시나리오 1개를 내줘. 답을 풀어주지 말고 내가 생각해보게 해줘.",
+      "오늘 다룬 개념 + 관련된 사전 지식까지 엮어서 답해야 하는 종합 문제 1개를 내줘 — 증명 스케치를 요구하거나 실제 ML/AI 시스템과 연결된 시나리오로. 답을 풀어주지 말고 내가 생각해보게 해줘.",
   },
 ];
 
