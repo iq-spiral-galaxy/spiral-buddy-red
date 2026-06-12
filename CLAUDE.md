@@ -56,6 +56,8 @@ Phase 0 끝나면 `pnpm i && pnpm build`로 검증하고 첫 태그(v0.1.0) 전�
   SESSION_SYSTEM은 증명 중심(Prove, don't memorize)으로 재작성, 수식 표기 규칙은
   session-store.ts의 **MATH_RENDER_NOTE 공통 상수** — 세션/룩업/챕터맥락/note-writer에 주입됨.
   새 프롬프트에 수식 지시 추가할 땐 이 상수를 재사용할 것.
+  v0.4.1: 수식 클릭 → LaTeX 복사 — extension renderer를 래핑해 data-tex로 원본 보존
+  (app.js의 _katexExt 래핑 블록. DOMPurify는 data-* 기본 허용이라 통과).
 
 ## 클라이언트 vendor (v0.4.0 — Red에서 추가)
 

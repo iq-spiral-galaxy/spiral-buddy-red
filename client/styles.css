@@ -9377,3 +9377,35 @@ body.light-mode .workspace-list {
 .message .katex-display > .katex {
   white-space: nowrap;
 }
+
+/* ───────────────── v0.4.1 — 수식 클릭 → LaTeX 복사 ───────────────── */
+.math-src {
+  cursor: pointer;
+  border-radius: 4px;
+  position: relative;
+  transition: background 120ms ease;
+}
+.math-src:hover {
+  background: rgba(255, 143, 126, 0.09);
+}
+.math-src-display {
+  display: block;
+}
+/* 복사 직후 1초간 피드백 배지 */
+.math-src.math-copied::after {
+  content: "LaTeX 복사됨 ✓";
+  position: absolute;
+  top: -1.9em;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  font-family: var(--font-sans);
+  background: var(--bg-elev-2);
+  color: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px 8px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 30;
+}

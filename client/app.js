@@ -29,14 +29,47 @@ marked.use(
 //   표준 모드(공백 경계 요구)면 그런 수식이 통째로 안 잡힘. 필수.
 // - output "html": MathML 출력 생략 — DOMPurify가 <annotation> 등을
 //   걷어내는 것과의 상호작용을 원천 차단 (시각 출력은 동일).
-marked.use(
-  markedKatex({
-    throwOnError: false,
-    nonStandard: true,
-    output: "html",
-  }),
-);
+// v0.4.1 — 수식 클릭 → LaTeX 원본 복사.
+// output:"html"은 원본 TeX를 DOM에 남기지 않으므로, extension의 renderer를
+// 래핑해 원본을 data-tex로 보존한다 (토크나이저는 그대로 — 파싱 회귀 없음.
+// DOMPurify는 data-* 속성을 기본 허용하므로 sanitize를 통과한다).
+const _katexExt = markedKatex({
+  throwOnError: false,
+  nonStandard: true,
+  output: "html",
+});
+for (const ext of _katexExt.extensions ?? []) {
+  const origRenderer = ext.renderer;
+  if (typeof origRenderer !== "function") continue;
+  ext.renderer = function (token) {
+    const html = origRenderer.call(this, token);
+    if (typeof html !== "string") return html;
+    const display = !!token.displayMode;
+    const cls = display ? "math-src math-src-display" : "math-src";
+    const title = display ? ` title="클릭하면 LaTeX 복사"` : "";
+    return `<span class="${cls}" data-tex="${escapeAttr(token.text ?? "")}"${title}>${html}</span>`;
+  };
+}
+marked.use(_katexExt);
 marked.setOptions({ breaks: true, gfm: true });
+
+// 수식 클릭 → 마크다운/Obsidian에 바로 붙일 수 있게 구분자 포함해 복사.
+// 텍스트 드래그 중(선택 존재)에는 가로채지 않는다.
+document.addEventListener("click", (e) => {
+  const el = e.target?.closest?.(".math-src");
+  if (!el) return;
+  const sel = window.getSelection?.();
+  if (sel && !sel.isCollapsed) return;
+  const tex = el.dataset.tex ?? "";
+  if (!tex) return;
+  const wrapped = el.classList.contains("math-src-display")
+    ? `$$${tex}$$`
+    : `$${tex}$`;
+  navigator.clipboard?.writeText(wrapped).then(() => {
+    el.classList.add("math-copied");
+    setTimeout(() => el.classList.remove("math-copied"), 1000);
+  });
+});
 
 // LLM이 가끔 \( \) / \[ \] 구분자로 수식을 내보냄 — KaTeX extension은
 // $ 계열만 처리하므로 $ 계열로 정규화. 코드 펜스/인라인 코드 구간은
