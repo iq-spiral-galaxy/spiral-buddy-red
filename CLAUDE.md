@@ -49,8 +49,13 @@ Phase 0 끝나면 `pnpm i && pnpm build`로 검증하고 첫 태그(v0.1.0) 전�
   프리셋 카드는 두 곳: 설정 모달(JSON 기반 자동) + **setup wizard(electron/setup.html 하드코딩 — JSON 바꾸면 여기도 같이!)**
 - 브랜드: 액센트 red/주황 + **배경도 딥 마룬 틴트** (v0.2.0, 사용자 확정 — "느낌 있는 배경").
   녹색 배경은 Green 버디 몫.
-- 남은 일: 시스템 프롬프트(src/session-store.ts SESSION_SYSTEM)를 AI/수학(증명 중심) 성격에 맞게 조정 검토
-  — 단, 클라이언트에 LaTeX 렌더러가 없으므로 수식 표기 지시는 렌더링 지원과 함께 갈 것
+- ✅ 수식 렌더링 + 프롬프트 (v0.3.0): 클라이언트에 KaTeX 도입(marked-katex-extension,
+  **nonStandard: true 필수** — 한국어 조사가 `$...$` 뒤에 밀착하므로 표준 모드면 안 잡힘.
+  output: "html"로 MathML 생략 — DOMPurify와의 상호작용 차단). `\( \)`/`\[ \]`는
+  normalizeMathDelimiters가 $ 계열로 정규화(코드 펜스/인라인 코드 구간은 보존).
+  SESSION_SYSTEM은 증명 중심(Prove, don't memorize)으로 재작성, 수식 표기 규칙은
+  session-store.ts의 **MATH_RENDER_NOTE 공통 상수** — 세션/룩업/챕터맥락/note-writer에 주입됨.
+  새 프롬프트에 수식 지시 추가할 땐 이 상수를 재사용할 것.
 
 ## 물려받은 인프라 (바꾸지 말 것 — Blue에서 검증된 핵심)
 

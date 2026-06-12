@@ -9356,3 +9356,24 @@ body.light-mode .workspace-list {
 .messages {
   width: 100%;
 }
+
+/* ───────────────────── v0.3.0 — KaTeX 수식 ───────────────────── */
+/* 채팅/룩업/노트 미리보기 공통. 본문 폰트(15px 안팎) 대비 약간 키워야
+   첨자가 뭉개지지 않음. */
+.katex {
+  font-size: 1.08em;
+}
+
+/* 긴 디스플레이 수식은 말풍선 폭을 뚫지 않고 가로 스크롤 */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 2px 6px;
+  margin: 0.6em 0;
+}
+
+/* chat 컬럼 grid 1fr 함정(CLAUDE.md) — 수식이 min-content 폭을 키워서
+   레이아웃을 밀지 않게 컨테이너 쪽에서 한 번 더 방어 */
+.message .katex-display > .katex {
+  white-space: nowrap;
+}

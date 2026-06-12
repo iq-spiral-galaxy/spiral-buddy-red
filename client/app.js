@@ -3,6 +3,7 @@
 
 import { marked } from "https://esm.sh/marked@13.0.3";
 import { markedHighlight } from "https://esm.sh/marked-highlight@2.2.1";
+import markedKatex from "https://esm.sh/marked-katex-extension@5";
 import hljs from "https://esm.sh/highlight.js@11.10.0";
 import DOMPurify from "https://esm.sh/dompurify@3.1.6";
 
@@ -19,14 +20,43 @@ marked.use(
     },
   }),
 );
+// v0.3.0 (Red) — 수식 렌더링. marked 토크나이저 레벨에서 $...$/$$...$$를
+// 집어가므로 수식 안 언더스코어($x_1$)가 <em>으로 깨지지 않고, 코드
+// 스팬/펜스 안의 $는 건드리지 않는다.
+// - nonStandard: 한국어는 조사가 $ 바로 뒤에 붙음("$\\mathbb{R}^3$의") —
+//   표준 모드(공백 경계 요구)면 그런 수식이 통째로 안 잡힘. 필수.
+// - output "html": MathML 출력 생략 — DOMPurify가 <annotation> 등을
+//   걷어내는 것과의 상호작용을 원천 차단 (시각 출력은 동일).
+marked.use(
+  markedKatex({
+    throwOnError: false,
+    nonStandard: true,
+    output: "html",
+  }),
+);
 marked.setOptions({ breaks: true, gfm: true });
+
+// LLM이 가끔 \( \) / \[ \] 구분자로 수식을 내보냄 — KaTeX extension은
+// $ 계열만 처리하므로 $ 계열로 정규화. 코드 펜스/인라인 코드 구간은
+// 정규식 escape(\( 등)가 흔하므로 절대 건드리지 않는다.
+function normalizeMathDelimiters(raw) {
+  return String(raw)
+    .split(/(```[\s\S]*?(?:```|$)|~~~[\s\S]*?(?:~~~|$)|`[^`\n]*`)/g)
+    .map((seg, i) => {
+      if (i % 2 === 1) return seg; // 코드 구간
+      return seg
+        .replace(/\\\[([\s\S]+?)\\\]/g, (_, body) => `\n$$${body}$$\n`)
+        .replace(/\\\(([\s\S]+?)\\\)/g, (_, body) => `$${body}$`);
+    })
+    .join("");
+}
 
 // v0.5.77 — 모든 마크다운 → HTML 변환을 sanitize 통과시킴.
 // LLM 출력은 챕터 본문(임의 마크다운 파일)의 영향을 받으므로
 // <img onerror=...> 류가 본문을 타고 응답에 섞일 가능성을 차단.
 // marked.parse를 직접 쓰지 말고 항상 이 함수를 거칠 것.
 function renderMarkdown(raw) {
-  return DOMPurify.sanitize(marked.parse(raw));
+  return DOMPurify.sanitize(marked.parse(normalizeMathDelimiters(raw)));
 }
 
 // ──────────────────────────────────────────────────────────

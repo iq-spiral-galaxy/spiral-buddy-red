@@ -39,6 +39,7 @@ Rules:
 - Write in the SAME LANGUAGE as the conversation (likely Korean).
 - Be ruthlessly concrete. Quote the learner's own framings when possible.
 - Don't fabricate content that wasn't in the conversation.
+- Math notation: keep formulas in LaTeX with $...$ (inline) / $$...$$ (display) — Obsidian renders these natively. Never wrap math in backticks; convert any unicode math (x², σ) from the conversation into proper LaTeX. Key derivations from the session belong in the note as display math.
 - If a section has nothing real to put in it, write a single italicized line like "_이번 세션에서 다루지 않음._".
 - Tags should reflect topic, not meta ("redis-memory", "cow-semantics", not "learning", "study").
 - **Summary**: write a clean topical summary. Do NOT start with the chapter number (e.g., write "Fixtures & SetUp 첫 스파이럴…" not "05. Fixtures & SetUp 첫 스파이럴…"). The chapter title is recorded separately.`;
