@@ -9409,3 +9409,249 @@ body.light-mode .workspace-list {
   pointer-events: none;
   z-index: 30;
 }
+
+/* ───────────────── v0.4.3 — 수식 입력 도우미 ───────────────── */
+.math-helper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.math-helper.disabled {
+  display: none;
+}
+
+/* (1) 항상 보이는 한 줄 툴바 — 자주쓰기 + ∑ 토글 */
+.mh-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+.mh-quick {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  min-width: 0;
+  scrollbar-width: thin;
+}
+.mh-sym {
+  flex: 0 0 auto;
+  min-width: 32px;
+  height: 28px;
+  padding: 0 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-elev);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease;
+  -webkit-text-fill-color: currentColor; /* light-mode gradient-text 회귀 방지 */
+}
+.mh-sym:hover {
+  background: var(--bg-elev-2);
+  border-color: var(--accent);
+}
+.mh-toggle {
+  flex: 0 0 auto;
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 11px;
+  background: var(--bg-elev-2);
+  color: var(--accent);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.12s ease, color 0.12s ease;
+}
+.mh-toggle:hover {
+  border-color: var(--accent);
+}
+.math-helper[data-open="true"] .mh-toggle {
+  border-color: var(--accent);
+  color: var(--accent-2);
+}
+.mh-toggle-glyph {
+  font-size: 15px;
+}
+
+/* (2) $ 입력 시에만 등장하는 라이브 프리뷰 한 줄 */
+.mh-preview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  padding: 3px 9px;
+  max-height: 40px;
+  overflow: hidden;
+}
+.mh-preview.hidden {
+  display: none;
+}
+.mh-preview-tag {
+  flex: 0 0 auto;
+  color: var(--text-faint);
+  font-size: 11px;
+}
+.mh-preview-render {
+  min-width: 0;
+  overflow-x: auto;
+  white-space: nowrap;
+  font-size: 14px;
+}
+.mh-preview-render :is(p, h1, h2, h3, ul, ol) {
+  margin: 0;
+  display: inline;
+}
+
+/* (3) 펼침 팔레트 — composer 위로 absolute (채팅 스크롤 안 밀림) */
+.mh-palette {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% + 6px);
+  max-height: 290px;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+  z-index: 40; /* composer 국소 영역 — send-btn/status 위, 모달보다 아래 */
+  overflow: hidden;
+}
+.mh-palette[hidden] {
+  display: none;
+}
+.mh-palette-head {
+  display: flex;
+  gap: 6px;
+  padding: 8px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.mh-search {
+  flex: 1;
+  min-width: 0;
+  height: 30px;
+  padding: 0 10px;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  outline: none;
+}
+.mh-search:focus {
+  border-color: var(--accent);
+}
+.mh-palette-close {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  background: var(--bg-elev-2);
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.mh-palette-close:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+.mh-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 4px 6px 0;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--border-soft);
+  scrollbar-width: thin;
+}
+.mh-tab {
+  flex: 0 0 auto;
+  background: transparent;
+  color: var(--text-dim);
+  border: 0;
+  border-bottom: 2px solid transparent;
+  padding: 6px 9px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.mh-tab:hover {
+  color: var(--text);
+}
+.mh-tab[aria-selected="true"] {
+  color: var(--accent-2);
+  border-bottom-color: var(--accent);
+}
+.mh-grid {
+  padding: 8px;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+  gap: 4px;
+}
+.mh-grid .mh-sym {
+  width: 100%;
+  height: 34px;
+}
+.mh-grid-empty {
+  grid-column: 1 / -1;
+  padding: 18px 8px;
+  text-align: center;
+  color: var(--text-faint);
+  font-size: 12px;
+}
+
+/* 좁은 폭: 그리드를 가로 스크롤 한 줄로 degrade */
+@media (max-width: 560px) {
+  .mh-grid {
+    grid-auto-flow: column;
+    grid-template-columns: none;
+    grid-auto-columns: 46px;
+    overflow-x: auto;
+  }
+}
+
+/* 라이트 모드 — gradient text 회귀 방지(-webkit-text-fill-color는 .mh-sym에 이미) */
+body.light-mode .mh-sym {
+  background: #ffffff;
+  color: #1f2937;
+  border-color: var(--border);
+}
+body.light-mode .mh-sym:hover {
+  background: #fdf0ec;
+  border-color: var(--accent);
+}
+body.light-mode .mh-toggle {
+  background: #fdf0ec;
+  color: #c2410c;
+}
+body.light-mode .mh-palette {
+  background: #ffffff;
+  border-color: var(--border);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+}
+body.light-mode .mh-search {
+  background: #fafafa;
+  color: #1f2937;
+}
+body.light-mode .mh-preview {
+  background: #ffffff;
+}

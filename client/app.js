@@ -8,6 +8,8 @@ import { markedHighlight } from "./vendor/marked-highlight.js";
 import markedKatex from "./vendor/marked-katex-extension.js";
 import hljs from "./vendor/highlight.js";
 import DOMPurify from "./vendor/dompurify.js";
+// v0.4.3 — 수식 입력 도우미 기호/템플릿 데이터 (12 카테고리 / 236개)
+import { MATH_SYMBOLS, MATH_RECENT_DEFAULTS } from "./math-symbols.js";
 
 // ──────────────────────────────────────────────────────────
 // Markdown setup
@@ -90,6 +92,12 @@ function normalizeMathDelimiters(raw) {
 // LLM 출력은 챕터 본문(임의 마크다운 파일)의 영향을 받으므로
 // <img onerror=...> 류가 본문을 타고 응답에 섞일 가능성을 차단.
 // marked.parse를 직접 쓰지 말고 항상 이 함수를 거칠 것.
+// ── v0.4.3 수식 입력 도우미 상수 ──
+const MATH_TABSTOP = "•"; // U+2022 — insert 문자열의 커서/탭스톱 슬롯 마커
+const MATH_RECENT_KEY = "spiral-buddy:math-recent";
+const MATH_OPEN_KEY = "spiral-buddy:math-palette-open";
+const MATH_TAB_KEY = "spiral-buddy:math-tab";
+
 function renderMarkdown(raw) {
   return DOMPurify.sanitize(marked.parse(normalizeMathDelimiters(raw)));
 }
@@ -137,6 +145,10 @@ const state = {
   quizLevel: 1,
   // 사이드바 검색 (v0.5.51)
   sidebarQuery: "",
+  // v0.4.3 수식 입력 도우미
+  mathTabstops: [], // 삽입된 템플릿의 남은 빈칸 절대 오프셋 (Tab으로 순회)
+  mathLastValueLen: 0, // 탭스톱 위치 보정용 직전 value 길이
+  composing: false, // 한글 IME 조합 중 여부
 };
 
 // localStorage에 마지막 로드맵 저장
@@ -320,6 +332,16 @@ function cacheEls() {
   els.pausedCountBadge = $("paused-count-badge");
   els.pauseBtn = $("pause-btn");
   els.input = $("input");
+  // v0.4.3 수식 입력 도우미 (요소는 index.html에 추가 — 없으면 null 가드)
+  els.mathHelper = $("math-helper");
+  els.mhQuick = document.querySelector(".mh-quick");
+  els.mhToggle = $("mh-toggle");
+  els.mhPreview = document.querySelector(".mh-preview");
+  els.mhPreviewRender = document.querySelector(".mh-preview-render");
+  els.mhPalette = $("mh-palette");
+  els.mhTabs = document.querySelector(".mh-tabs");
+  els.mhGrid = document.querySelector(".mh-grid");
+  els.mhSearch = document.querySelector(".mh-search");
   els.sendBtn = $("send-btn");
   els.refineBtn = $("refine-btn");
   els.refineBar = $("refine-bar");
@@ -428,6 +450,46 @@ function wireEvents() {
     submitMessage();
   });
   els.input.addEventListener("keydown", (e) => {
+    // v0.4.3 — ⌘\ (Ctrl+\): 수식 기호 팔레트 토글. IME 조합 중(229)엔 무시.
+    if (
+      (e.metaKey || e.ctrlKey) &&
+      e.key === "\\" &&
+      !e.isComposing &&
+      e.keyCode !== 229
+    ) {
+      e.preventDefault();
+      toggleMathPalette();
+      return;
+    }
+    // v0.4.3 — 팔레트 열려있을 때 Esc로 닫기
+    if (e.key === "Escape" && isMathPaletteOpen()) {
+      e.preventDefault();
+      toggleMathPalette(false);
+      return;
+    }
+    // v0.4.3 — 템플릿 삽입 직후 활성 탭스톱이 있으면 Tab으로 다음 빈칸 이동
+    if (e.key === "Tab" && !e.shiftKey && state.mathTabstops.length) {
+      e.preventDefault();
+      const next = state.mathTabstops.shift();
+      // 방어: 위치가 유효 범위일 때만 (편집으로 오염됐으면 무시)
+      if (typeof next === "number" && next >= 0 && next <= els.input.value.length) {
+        els.input.setSelectionRange(next, next);
+      }
+      return;
+    }
+    // v0.4.3 — 캐럿을 손으로 옮기면(화살표/Home/End) 탭스톱 모드 해제
+    if (
+      state.mathTabstops.length &&
+      (e.key === "ArrowUp" ||
+        e.key === "ArrowDown" ||
+        e.key === "ArrowLeft" ||
+        e.key === "ArrowRight" ||
+        e.key === "Home" ||
+        e.key === "End")
+    ) {
+      state.mathTabstops = [];
+      // preventDefault 안 함 — 기본 캐럿 이동 유지
+    }
     // ⌘⇧↵ (or Ctrl+Shift+Enter) — 다듬어서 바로 send
     if (
       e.key === "Enter" &&
@@ -473,9 +535,49 @@ function wireEvents() {
   });
   // 사용자가 직접 타이핑하면 다듬기 배너/원본 캐시 무효화
   els.input.addEventListener("input", () => {
-    if (state.refineOriginal != null && els.input.value !== state.refineApplied) {
+    // v0.4.3 — 기호 삽입(insertMathSnippet가 쏜 input)은 다듬기 배너를 건드리지
+    // 않는다. 사용자가 직접 타이핑할 때만 refine 상태 무효화(원본 복원 기회 보존).
+    if (
+      !_mathInserting &&
+      state.refineOriginal != null &&
+      els.input.value !== state.refineApplied
+    ) {
       clearRefineState();
     }
+    // v0.4.3 — 라이브 수식 프리뷰 갱신 ($ 게이트 + 디바운스)
+    scheduleMathPreview();
+    // 우리가 쏜 input이면 탭스톱은 이미 세팅됨 — 길이만 갱신하고 종료.
+    if (_mathInserting) {
+      state.mathLastValueLen = els.input.value.length;
+      return;
+    }
+    // 사용자 편집 시 남은 탭스톱 위치 보정. 삽입(delta>0)이면 편집 시작점 이후
+    // 탭스톱을 delta만큼 이동(범위 밖 폐기). 삭제(delta<0)는 위치 추적이
+    // 불확실하므로 안전하게 탭스톱 모드 해제 — 행렬 셀 채우다 지우면 Tab 종료.
+    if (state.mathTabstops.length) {
+      const v = els.input.value;
+      const delta = v.length - state.mathLastValueLen;
+      if (delta < 0) {
+        state.mathTabstops = [];
+      } else {
+        const editStart = els.input.selectionStart - delta;
+        state.mathTabstops = state.mathTabstops
+          .map((p) => (p >= editStart ? p + delta : p))
+          .filter((p) => p >= 0 && p <= v.length);
+      }
+    }
+    state.mathLastValueLen = els.input.value.length;
+  });
+  // v0.4.3 — 텍스트 클릭으로 캐럿 옮기면 탭스톱 모드 해제
+  els.input.addEventListener("pointerdown", () => {
+    state.mathTabstops = [];
+  });
+  // v0.4.3 — 한글 IME 조합 추적
+  els.input.addEventListener("compositionstart", () => {
+    state.composing = true;
+  });
+  els.input.addEventListener("compositionend", () => {
+    state.composing = false;
   });
   if (els.refineBtn) {
     els.refineBtn.addEventListener("click", () => refineInPlace());
@@ -493,6 +595,8 @@ function wireEvents() {
 
   // v0.5.31 #4: 입력창 높이 조절 (드래그 핸들)
   initComposerResizer();
+  // v0.4.3 — 수식 입력 도우미(팔레트/툴바/프리뷰) 초기화
+  initMathHelper();
   els.quizBtn.addEventListener("click", () => {
     if (!state.session || state.pending) return;
     advanceQuiz();
@@ -4922,12 +5026,373 @@ async function startSession(chapterId) {
   }
 }
 
+// ──────────────────────────────────────────────────────────
+// v0.4.3 — 수식 입력 도우미 (팔레트 + 자주쓰기 툴바 + 라이브 프리뷰)
+//   사용자가 LaTeX를 몰라도 클릭만으로 행렬·적분·기호를 입력.
+//   설계: math-input-design 워크플로 합성 스펙.
+// ──────────────────────────────────────────────────────────
+
+let _mathEntryByInsert = null; // insert 문자열 → entry (recent 룩업/툴바용)
+let _mathInserting = false; // insertMathSnippet가 쏜 input 이벤트 구분 플래그
+let _mathPreviewTimer = null;
+let _mathActiveTab = "recent";
+
+function _mathLoadRecent() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(MATH_RECENT_KEY) || "null");
+    if (Array.isArray(raw) && raw.length) return raw.slice(0, 12);
+  } catch {}
+  return MATH_RECENT_DEFAULTS.slice();
+}
+
+function _mathSaveRecent(list) {
+  try {
+    localStorage.setItem(MATH_RECENT_KEY, JSON.stringify(list.slice(0, 12)));
+  } catch {}
+}
+
+function initMathHelper() {
+  if (!els.mathHelper || !els.mhTabs || !els.mhGrid) return;
+  // insert → entry 인덱스 (중복 insert는 첫 항목 우선)
+  _mathEntryByInsert = new Map();
+  for (const c of MATH_SYMBOLS) {
+    for (const e of c.entries) {
+      if (!_mathEntryByInsert.has(e.insert)) _mathEntryByInsert.set(e.insert, e);
+    }
+  }
+  _renderMathTabs();
+  const savedTab = localStorage.getItem(MATH_TAB_KEY);
+  _selectMathTab(savedTab && _mathTabExists(savedTab) ? savedTab : "recent");
+  _renderMathQuick();
+
+  // 펼침 상태 복원 (init 시엔 검색에 focus 주지 않음 — 로드 시 포커스 도둑 방지)
+  if (localStorage.getItem(MATH_OPEN_KEY) === "1") {
+    els.mathHelper.dataset.open = "true";
+    if (els.mhPalette) els.mhPalette.hidden = false;
+    els.mhToggle?.setAttribute("aria-expanded", "true");
+  }
+
+  // 기호 버튼 클릭 시 textarea 포커스/선택이 풀리지 않게 mousedown 차단
+  els.mathHelper.addEventListener("mousedown", (e) => {
+    if (e.target.closest(".mh-sym")) e.preventDefault();
+  });
+  els.mathHelper.addEventListener("click", (e) => {
+    const sym = e.target.closest(".mh-sym");
+    if (sym && sym.dataset.insert != null) {
+      insertMathSnippet(els.input, sym.dataset.insert, {
+        displayBlock: sym.dataset.block === "1",
+      });
+      return;
+    }
+    if (e.target.closest("#mh-toggle")) {
+      toggleMathPalette();
+      return;
+    }
+    if (e.target.closest(".mh-palette-close")) {
+      toggleMathPalette(false);
+      els.input.focus();
+      return;
+    }
+    const tab = e.target.closest(".mh-tab");
+    if (tab && tab.dataset.tab) {
+      if (els.mhSearch) els.mhSearch.value = "";
+      _selectMathTab(tab.dataset.tab);
+    }
+  });
+  // 검색 입력 — 한글 조합 중엔 재렌더 보류(부분 자모가 미스매치로 깜빡이는 것 방지)
+  let _mhSearchComposing = false;
+  els.mhSearch?.addEventListener("compositionstart", () => {
+    _mhSearchComposing = true;
+  });
+  els.mhSearch?.addEventListener("compositionend", () => {
+    _mhSearchComposing = false;
+    _renderMathSearch(els.mhSearch.value.trim());
+  });
+  els.mhSearch?.addEventListener("input", () => {
+    if (_mhSearchComposing) return;
+    _renderMathSearch(els.mhSearch.value.trim());
+  });
+  els.mhSearch?.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      toggleMathPalette(false);
+      els.input.focus();
+    }
+  });
+}
+
+function _mathTabExists(id) {
+  return id === "recent" || MATH_SYMBOLS.some((c) => c.id === id);
+}
+
+function _renderMathTabs() {
+  const tabs = [
+    { id: "recent", label: "자주쓰기", emoji: "★" },
+    ...MATH_SYMBOLS.map((c) => ({ id: c.id, label: c.label, emoji: c.emoji })),
+  ];
+  els.mhTabs.innerHTML = "";
+  for (const t of tabs) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "mh-tab";
+    b.dataset.tab = t.id;
+    b.setAttribute("role", "tab");
+    b.textContent = `${t.emoji} ${t.label}`;
+    els.mhTabs.appendChild(b);
+  }
+}
+
+function _selectMathTab(id) {
+  _mathActiveTab = id;
+  try {
+    localStorage.setItem(MATH_TAB_KEY, id);
+  } catch {}
+  for (const b of els.mhTabs.querySelectorAll(".mh-tab")) {
+    b.setAttribute("aria-selected", b.dataset.tab === id ? "true" : "false");
+  }
+  _renderMathGrid(id);
+}
+
+function _mathEntriesFor(catId) {
+  if (catId === "recent") {
+    return _mathLoadRecent()
+      .map((ins) => _mathEntryByInsert.get(ins))
+      .filter(Boolean);
+  }
+  const c = MATH_SYMBOLS.find((x) => x.id === catId);
+  return c ? c.entries : [];
+}
+
+function _mathButton(entry) {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "mh-sym";
+  b.textContent = entry.display;
+  b.title = entry.tip || entry.display;
+  b.setAttribute("aria-label", entry.tip || entry.display);
+  b.dataset.insert = entry.insert;
+  b.dataset.block = entry.display_block ? "1" : "0";
+  return b;
+}
+
+function _renderMathGrid(catId) {
+  els.mhGrid.innerHTML = "";
+  const entries = _mathEntriesFor(catId);
+  if (!entries.length) {
+    const empty = document.createElement("div");
+    empty.className = "mh-grid-empty";
+    empty.textContent =
+      catId === "recent" ? "아직 없음 — 기호를 쓰면 여기 모여요" : "";
+    els.mhGrid.appendChild(empty);
+    return;
+  }
+  const frag = document.createDocumentFragment();
+  for (const e of entries) frag.appendChild(_mathButton(e));
+  els.mhGrid.appendChild(frag);
+}
+
+function _renderMathSearch(q) {
+  if (!q) {
+    _selectMathTab(_mathActiveTab || "recent");
+    return;
+  }
+  const ql = q.toLowerCase();
+  const seen = new Set();
+  const hits = [];
+  for (const c of MATH_SYMBOLS) {
+    for (const e of c.entries) {
+      if (seen.has(e.insert)) continue;
+      const hay = `${e.display} ${e.tip || ""} ${e.insert}`.toLowerCase();
+      if (hay.includes(ql)) {
+        hits.push(e);
+        seen.add(e.insert);
+      }
+    }
+  }
+  for (const b of els.mhTabs.querySelectorAll(".mh-tab")) {
+    b.setAttribute("aria-selected", "false");
+  }
+  els.mhGrid.innerHTML = "";
+  if (!hits.length) {
+    const empty = document.createElement("div");
+    empty.className = "mh-grid-empty";
+    empty.textContent = "검색 결과 없음";
+    els.mhGrid.appendChild(empty);
+    return;
+  }
+  const frag = document.createDocumentFragment();
+  for (const e of hits) frag.appendChild(_mathButton(e));
+  els.mhGrid.appendChild(frag);
+}
+
+function _renderMathQuick() {
+  if (!els.mhQuick) return;
+  els.mhQuick.innerHTML = "";
+  const frag = document.createDocumentFragment();
+  for (const ins of _mathLoadRecent().slice(0, 8)) {
+    const e = _mathEntryByInsert.get(ins);
+    if (e) frag.appendChild(_mathButton(e));
+  }
+  els.mhQuick.appendChild(frag);
+}
+
+function isMathPaletteOpen() {
+  return els.mathHelper?.dataset.open === "true";
+}
+
+function toggleMathPalette(force) {
+  if (!els.mathHelper || !els.mhPalette) return;
+  const open = typeof force === "boolean" ? force : !isMathPaletteOpen();
+  els.mathHelper.dataset.open = open ? "true" : "false";
+  els.mhPalette.hidden = !open;
+  els.mhToggle?.setAttribute("aria-expanded", open ? "true" : "false");
+  try {
+    localStorage.setItem(MATH_OPEN_KEY, open ? "1" : "0");
+  } catch {}
+  if (open) els.mhSearch?.focus();
+}
+
+/** insert 문자열에서 • 탭스톱을 제거하고, 각 • 가 있던 자리를 캐럿 오프셋으로 반환. */
+function _stripTabstops(str) {
+  const stops = [];
+  let clean = "";
+  for (const ch of str) {
+    if (ch === MATH_TABSTOP) stops.push(clean.length);
+    else clean += ch;
+  }
+  return { clean, stops };
+}
+
+/** pos가 수식($…$) 안인지 — 코드펜스/인라인코드 제외 후 앞쪽 $ 개수 홀짝. */
+function isInsideMath(value, pos) {
+  let before = value.slice(0, pos);
+  before = before
+    .replace(/```[\s\S]*?```/g, (m) => " ".repeat(m.length))
+    .replace(/`[^`\n]*`/g, (m) => " ".repeat(m.length));
+  let count = 0;
+  for (let i = 0; i < before.length; i++) {
+    if (before[i] !== "$") continue;
+    // 앞선 연속 백슬래시가 짝수면 진짜 $ (\\$ 는 백슬래시 이스케이프라 $ 유효)
+    let bs = 0;
+    for (let j = i - 1; j >= 0 && before[j] === "\\"; j--) bs++;
+    if (bs % 2 === 0) count++;
+  }
+  return count % 2 === 1;
+}
+
+/** textarea 커서 위치에 LaTeX 토큰을 삽입. $ 자동 wrap + 선택영역 wrap + 탭스톱. */
+function insertMathSnippet(el, insertStr, { displayBlock = false } = {}) {
+  if (!el || el.disabled) return;
+  // 한글 IME 조합 중엔 삽입 보류 — 조합 글자가 깨지거나 중복 입력되는 것 방지.
+  // (mousedown preventDefault로 버튼 클릭 시 조합은 보통 먼저 확정되므로 드묾)
+  if (state.composing) return;
+  const s = el.selectionStart;
+  const e = el.selectionEnd;
+  const hasSel = s !== e;
+  const selText = el.value.slice(s, e);
+
+  // 선택영역이 있고 토큰에 슬롯이 있으면 첫 • 를 선택텍스트로 치환(wrap)
+  let token = insertStr;
+  if (hasSel && token.includes(MATH_TABSTOP)) {
+    token = token.replace(MATH_TABSTOP, selText);
+  }
+
+  // 수식 밖이면 $…$ (display는 $$…$$ + 줄 보정)로 감쌈
+  const inside = isInsideMath(el.value, s);
+  let wrapL = "";
+  let wrapR = "";
+  let prefix = "";
+  let suffix = "";
+  if (!inside) {
+    if (displayBlock) {
+      wrapL = "$$";
+      wrapR = "$$";
+      const before = el.value.slice(0, s);
+      const after = el.value.slice(e);
+      if (before.length && !before.endsWith("\n")) prefix = "\n";
+      if (after.length && !after.startsWith("\n")) suffix = "\n";
+    } else {
+      wrapL = "$";
+      wrapR = "$";
+    }
+  }
+
+  const composed = prefix + wrapL + token + wrapR + suffix;
+  const { clean, stops } = _stripTabstops(composed);
+
+  el.focus();
+  if (typeof el.setRangeText === "function") {
+    el.setRangeText(clean, s, e, "end"); // 네이티브 undo 스택 보존
+  } else {
+    el.value = el.value.slice(0, s) + clean + el.value.slice(e);
+    el.setSelectionRange(s + clean.length, s + clean.length);
+  }
+
+  const absStops = stops.map((rel) => s + rel);
+  if (absStops.length) {
+    state.mathTabstops = absStops.slice(1); // 첫 칸은 지금 캐럿, 나머지는 Tab용
+    el.setSelectionRange(absStops[0], absStops[0]);
+  } else {
+    state.mathTabstops = [];
+  }
+  state.mathLastValueLen = el.value.length;
+
+  // 기존 파이프라인(refine 무효화, send 버튼 활성, 프리뷰) 재사용 — 단 탭스톱은
+  // 이미 세팅됐으므로 input 리스너가 건드리지 않게 플래그로 보호.
+  _mathInserting = true;
+  el.dispatchEvent(new InputEvent("input", { bubbles: true }));
+  _mathInserting = false;
+
+  bumpMathRecent(insertStr);
+}
+
+/** 자주쓰기 갱신 — 택소노미에 있는 항목만 추적, 최근순 최대 12. */
+function bumpMathRecent(insertStr) {
+  if (!_mathEntryByInsert || !_mathEntryByInsert.has(insertStr)) return;
+  let list = _mathLoadRecent().filter((x) => x !== insertStr);
+  list.unshift(insertStr);
+  _mathSaveRecent(list);
+  _renderMathQuick();
+  if (_mathActiveTab === "recent" && !els.mhSearch?.value) {
+    _renderMathGrid("recent");
+  }
+}
+
+function scheduleMathPreview() {
+  if (!els.mhPreview) return;
+  if (_mathPreviewTimer) clearTimeout(_mathPreviewTimer);
+  _mathPreviewTimer = setTimeout(updateMathPreview, 150);
+}
+
+function updateMathPreview() {
+  if (!els.mhPreview || !els.mhPreviewRender) return;
+  const v = els.input.value;
+  if (!v.includes("$")) {
+    els.mhPreview.classList.add("hidden");
+    return;
+  }
+  // $ 짝이 안 맞으면(홀수) 미완성 — 직전 렌더 유지해 깜빡임 억제
+  const dollars = (v.match(/\$/g) || []).length;
+  if (dollars % 2 === 1) return;
+  // marked.parse는 throw 가능(CLAUDE.md) — 실패해도 입력은 막지 않음
+  try {
+    els.mhPreviewRender.innerHTML = renderMarkdown(v);
+    els.mhPreview.classList.remove("hidden");
+  } catch {
+    els.mhPreview.classList.add("hidden");
+  }
+}
+
 async function submitMessage() {
   if (!state.session || state.pending) return;
   const text = els.input.value.trim();
   if (!text) return;
   els.input.value = "";
   clearRefineState();
+  // v0.4.3 — 전송 후 수식 프리뷰/탭스톱 정리 (input 이벤트가 안 나므로 수동)
+  state.mathTabstops = [];
+  state.mathLastValueLen = 0;
+  els.mhPreview?.classList.add("hidden");
   await sendMessage(text);
 }
 
@@ -5823,6 +6288,12 @@ function enableSessionUi(enabled) {
   els.quizBtn.disabled = !enabled;
   if (els.pauseBtn) els.pauseBtn.disabled = !enabled;
   if (els.refineBtn) els.refineBtn.disabled = !enabled;
+  // v0.4.3 — 세션 없을 땐 수식 도우미 숨김 (입력 불가 상태에서 노출 X)
+  if (els.mathHelper) els.mathHelper.classList.toggle("disabled", !enabled);
+  // 세션 전환 시 수식 입력 상태 초기화 (이전 세션 탭스톱/길이 잔류 방지)
+  state.mathTabstops = [];
+  state.mathLastValueLen = 0;
+  if (!enabled) els.mhPreview?.classList.add("hidden");
   els.input.placeholder = enabled
     ? "메시지 입력 후 Enter (Shift+Enter는 줄바꿈) — 다듬어 보내기 ⌘⇧↵"
     : "세션을 시작하면 입력할 수 있어요";

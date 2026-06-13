@@ -236,6 +236,42 @@
             placeholder="세션을 시작하면 입력할 수 있어요"
             disabled
           ></textarea>
+          <!-- v0.4.3 — 수식 입력 도우미 (팔레트 + 자주쓰기 툴바 + 라이브 프리뷰) -->
+          <div id="math-helper" class="math-helper disabled" data-open="false">
+            <div class="mh-toolbar" role="toolbar" aria-label="수식 빠른 입력">
+              <div class="mh-quick"></div>
+              <button
+                type="button"
+                id="mh-toggle"
+                class="mh-toggle"
+                aria-expanded="false"
+                aria-controls="mh-palette"
+                title="기호 팔레트 열기 (⌘\)"
+              >
+                <span class="mh-toggle-glyph" aria-hidden="true">∑</span>
+                <span class="mh-toggle-label">수식</span>
+              </button>
+            </div>
+            <div class="mh-preview hidden" aria-live="off">
+              <span class="mh-preview-tag" aria-hidden="true">미리보기</span>
+              <div class="mh-preview-render"></div>
+            </div>
+            <div id="mh-palette" class="mh-palette" role="dialog" aria-label="수식 기호 팔레트" hidden>
+              <div class="mh-palette-head">
+                <input
+                  type="text"
+                  class="mh-search"
+                  placeholder="기호 검색 (예: sum, 적분, theta, 행렬)"
+                  aria-label="기호 검색"
+                  autocomplete="off"
+                  spellcheck="false"
+                />
+                <button type="button" class="mh-palette-close" title="닫기 (Esc)" aria-label="닫기">✕</button>
+              </div>
+              <div class="mh-tabs" role="tablist"></div>
+              <div class="mh-grid" role="tabpanel"></div>
+            </div>
+          </div>
           <div id="refine-bar" class="refine-bar hidden" role="status" aria-live="polite">
             <span class="refine-bar-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">

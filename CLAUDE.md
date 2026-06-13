@@ -58,6 +58,11 @@ Phase 0 끝나면 `pnpm i && pnpm build`로 검증하고 첫 태그(v0.1.0) 전�
   새 프롬프트에 수식 지시 추가할 땐 이 상수를 재사용할 것.
   v0.4.1: 수식 클릭 → LaTeX 복사 — extension renderer를 래핑해 data-tex로 원본 보존
   (app.js의 _katexExt 래핑 블록. DOMPurify는 data-* 기본 허용이라 통과).
+  v0.4.3: 수식 입력 도우미 — #input 아래 기호 팔레트(12 카테고리/236개) + 자주쓰기 툴바
+  + $ 게이트 라이브 프리뷰. 데이터는 **client/math-symbols.js**(ESM, 워크플로 택소노미 →
+  KaTeX 검증). insertMathSnippet이 • 토큰을 탭스톱으로 쓰고 제거, $ 자동 wrap(isInsideMath),
+  setRangeText로 네이티브 undo 보존. ⌘\ 토글. 삽입은 InputEvent 재발화로 기존 파이프라인
+  재사용하되 _mathInserting 플래그로 refine 무효화/탭스톱 보정을 보호. 삭제 시 탭스톱 해제.
 
 ## 클라이언트 vendor (v0.4.0 — Red에서 추가)
 
