@@ -306,6 +306,11 @@ data/curated-domains.json     ─ iq-ai-lab Layer 0→6 hierarchy + 트랙 프�
 
 PR / 이슈 환영. 큰 변경 전엔 이슈로 먼저 논의해주세요.
 
+기여 전에 [CONTRIBUTING.md](CONTRIBUTING.md)를 읽어주세요. **Pull Request를 제출하면
+[기여자 라이선스 동의서(CLA.md)](CLA.md)에 동의**한 것으로 간주되며, 모든 커밋에
+DCO `Signed-off-by`(`git commit -s`)가 필요합니다.
+
 ## 📄 License
 
-MIT
+[MIT](LICENSE). 기여물 또한 MIT로 제공됩니다(inbound = outbound). 단, [CLA](CLA.md)에 따라
+프로젝트 소유자는 기여를 재라이선스(상용·독점 포함)할 권리를 보유합니다.
