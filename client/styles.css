@@ -307,7 +307,9 @@ body.sidebar-collapsed #sidebar-resizer {
 /* v0.5.51 — 가장 최근 학습 챕터: 재진입 시 한눈에 보이도록 강한 시각 표식.
  * 단순 visited보다 한 단계 위 강조 — 좌측 accent bar + 살짝 빛남.
  */
-.chapter-item--recent .chapter-btn {
+/* v0.4.4 — 강조 하이라이트(좌측 accent bar + 빛남)는 현재 진행 중인 챕터(--active).
+   "마지막" 뱃지는 마지막 End&Save 챕터(--recent). 둘은 분리됨. */
+.chapter-item--active .chapter-btn {
   position: relative;
   background: linear-gradient(
     90deg,
@@ -317,6 +319,9 @@ body.sidebar-collapsed #sidebar-resizer {
   );
   border-left: 3px solid var(--accent, #ff8f7e);
   padding-left: calc(var(--chapter-pad-left, 10px) - 3px);
+}
+.chapter-item--recent .chapter-btn {
+  position: relative; /* "마지막" ::after 앵커 */
 }
 .chapter-item--recent .chapter-btn::after {
   content: "마지막";
@@ -334,7 +339,7 @@ body.sidebar-collapsed #sidebar-resizer {
 .chapter-item--recent .chapter-btn:hover::after {
   opacity: 0; /* hover 시 액션 아이콘과 안 겹치게 사라짐 */
 }
-body.light-mode .chapter-item--recent .chapter-btn {
+body.light-mode .chapter-item--active .chapter-btn {
   background: linear-gradient(
     90deg,
     rgba(178, 31, 8, 0.10) 0%,

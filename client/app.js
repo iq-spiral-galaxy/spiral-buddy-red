@@ -1797,6 +1797,7 @@ async function handleSessionInterruption() {
   state.messages = [];
   enableSessionUi(false);
   updateTopbar();
+  refreshChapterActive(); // 세션 종료 → 활성 하이라이트를 마지막 학습 챕터로
   els.messages.innerHTML = `<div class="placeholder"><p>왼쪽에서 챕터를 골라 세션을 시작하세요.</p></div>`;
   return "continue";
 }
@@ -1882,14 +1883,19 @@ async function switchRoadmap(roadmapId) {
  */
 function scrollToRecentChapter() {
   if (!Array.isArray(state.chapters) || state.chapters.length === 0) return;
-  const visited = state.chapters
-    .filter((c) => c.lastDate)
-    .sort((a, b) => (b.lastDate ?? "").localeCompare(a.lastDate ?? ""));
-  const target = visited[0];
-  if (!target) return;
+  // v0.4.4 — 진행 중 세션이 있으면 그 챕터로, 없으면 마지막 학습 챕터로 스크롤
+  const sessionId = state.session?.chapterId ?? null;
+  const targetId =
+    sessionId && state.chapters.some((c) => c.id === sessionId)
+      ? sessionId
+      : (state.chapters
+          .filter((c) => c.lastDate)
+          .sort((a, b) => (b.lastDate ?? "").localeCompare(a.lastDate ?? ""))[0]
+          ?.id ?? null);
+  if (!targetId) return;
   const tryScroll = () => {
     const el = els.chapterList?.querySelector(
-      `button[data-id="${CSS.escape(target.id)}"]`,
+      `button[data-id="${CSS.escape(targetId)}"]`,
     );
     if (el && typeof el.scrollIntoView === "function") {
       el.scrollIntoView({ block: "center", behavior: "smooth" });
@@ -2000,6 +2006,12 @@ function _highlightMatch(text, query) {
   return `${before}<mark class="sidebar-search-hit">${match}</mark>${after}`;
 }
 
+// v0.4.4 — 세션 시작/종료/일시정지/재개 시 챕터 목록의 활성 하이라이트를
+// 현재 진행 챕터 기준으로 다시 그린다. (chapters 로드 안 됐으면 no-op)
+function refreshChapterActive() {
+  if (els.chapterList && state.chapters.length) renderChapters();
+}
+
 function renderChapters() {
   els.chapterList.innerHTML = "";
   if (state.chapters.length === 0) {
@@ -2014,6 +2026,10 @@ function renderChapters() {
       .sort((a, b) => (b.lastDate ?? "").localeCompare(a.lastDate ?? ""));
     return visited[0]?.id ?? null;
   })();
+  // v0.4.4 — "활성" 하이라이트는 **현재 진행 중인 세션의 챕터**를 따라간다.
+  // 세션이 없으면(앱 재진입 등) 마지막 학습 챕터로 fallback. "마지막" 뱃지는
+  // 항상 마지막 End&Save(recentChapterId)를 가리킴 — 둘은 별개 개념으로 분리.
+  const activeChapterId = state.session?.chapterId ?? recentChapterId;
   // 검색어가 있으면 필터링 (v0.5.51)
   const q = (state.sidebarQuery ?? "").trim().toLowerCase();
   const filtered = q
@@ -2030,6 +2046,9 @@ function renderChapters() {
     li.className = "chapter-item";
     const visited = (ch.maxDepth ?? 0) > 0;
     const isRecent = ch.id === recentChapterId;
+    const isActive = ch.id === activeChapterId;
+    // 활성(진행 중) 챕터 = 강조 하이라이트, 마지막 저장 챕터 = "마지막" 뱃지
+    if (isActive) li.classList.add("chapter-item--active");
     if (isRecent) li.classList.add("chapter-item--recent");
     const badge = visited
       ? `<span class="chapter-depth-pill deletable" data-chapter-delete="${escapeAttr(ch.id)}" title="클릭하여 노트 삭제 · 마지막 학습: ${escapeAttr(ch.lastDate ?? "")} · 총 ${ch.visitCount}회">d${ch.maxDepth}</span>`
@@ -4994,6 +5013,7 @@ async function startSession(chapterId) {
     refreshPausedList(); // 일시정지 목록 갱신
     updateTopbar();
     enableSessionUi(true);
+    refreshChapterActive(); // 활성 하이라이트를 시작한 챕터로 이동
 
     const assistantEl = appendAssistantMessage("");
     await streamInto(res, assistantEl, handle);
@@ -5018,6 +5038,7 @@ async function startSession(chapterId) {
     } else {
       enableSessionUi(false);
       state.session = null;
+      refreshChapterActive(); // 시작 실패 → 활성 하이라이트 원복
       setStatus(`세션 시작 실패: ${err.message} — 챕터를 다시 클릭해주세요`, "error");
     }
   } finally {
@@ -5761,6 +5782,7 @@ async function pauseSession() {
   els.messages.innerHTML = "";
   enableSessionUi(false);
   updateTopbar();
+  refreshChapterActive(); // 일시정지 → 활성 하이라이트를 마지막 학습 챕터로
   setStatus(`⏸ "${meta.chapterTitle}" 일시정지됨 — 좌측 PAUSED에서 언제든 이어가기`);
   setTimeout(() => {
     if (els.statusBar?.textContent?.startsWith("⏸")) setStatus("");
@@ -5836,6 +5858,7 @@ async function resumePausedSession(id) {
 
     enableSessionUi(true);
     updateTopbar();
+    refreshChapterActive(); // 재개 → 활성 하이라이트를 이어가는 챕터로
     // resumed 항목은 paused 목록에서 제거
     writePausedList(readPausedList().filter((p) => p.id !== id));
     refreshPausedList();
@@ -5920,6 +5943,7 @@ async function endSession() {
     state.messages = [];
     enableSessionUi(false);
     updateTopbar();
+    refreshChapterActive(); // 저장·종료 → 활성 하이라이트 즉시 원복 (이후 loadRoadmapData가 최신 lastDate로 재렌더)
     // 같은 세션이 일시정지 목록에 있었다면 정리
     writePausedList(readPausedList().filter((p) => p.id !== endingSessionId));
     refreshPausedList();

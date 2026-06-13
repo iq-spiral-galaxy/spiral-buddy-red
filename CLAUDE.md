@@ -63,6 +63,12 @@ Phase 0 끝나면 `pnpm i && pnpm build`로 검증하고 첫 태그(v0.1.0) 전�
   KaTeX 검증). insertMathSnippet이 • 토큰을 탭스톱으로 쓰고 제거, $ 자동 wrap(isInsideMath),
   setRangeText로 네이티브 undo 보존. ⌘\ 토글. 삽입은 InputEvent 재발화로 기존 파이프라인
   재사용하되 _mathInserting 플래그로 refine 무효화/탭스톱 보정을 보호. 삭제 시 탭스톱 해제.
+- ✅ 챕터 활성 하이라이트 분리 (v0.4.4, 패밀리 공통 버그 수정): 좌측 accent 하이라이트는
+  **현재 진행 중인 세션 챕터**(state.session.chapterId) 기준 — 세션 없으면 마지막 학습으로
+  fallback. "마지막" 뱃지는 별개로 마지막 End&Save(recentChapterId)에 고정. CSS는
+  `chapter-item--active`(하이라이트) vs `--recent`("마지막" 라벨)로 분리. startSession에서
+  state.session만 갱신하고 renderChapters를 안 불러서 하이라이트가 안 옮겨가던 게 원인 —
+  세션 전환 6곳(시작/실패/일시정지/재개/종료×2)에 refreshChapterActive() 추가.
 
 ## 클라이언트 vendor (v0.4.0 — Red에서 추가)
 
