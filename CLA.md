@@ -134,3 +134,5 @@
 ---
 
 *프로젝트에 기여함으로써 귀하는 위 내용을 읽고 동의함을 확인합니다.*
+
+*Spiral Buddy Red는 [iq-spiral-galaxy](https://github.com/iq-spiral-galaxy) 패밀리의 일부입니다.*

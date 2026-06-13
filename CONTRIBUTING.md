@@ -101,7 +101,11 @@ pnpm build          # TypeScript 빌드 검증
 
 PR을 열면 템플릿의 체크박스가 뜹니다. 모두 확인해주세요:
 
-- [ ] [CLA](CLA.md)를 읽고 동의함
+- [ ] [CLA](CLA.md)에 서명 (PR을 열면 봇이 안내 — 위 [CLA 서명 방법](#cla-서명-방법-cla-assistant-lite))
 - [ ] 모든 커밋에 DCO `Signed-off-by` 포함 (`git commit -s`)
 - [ ] 본인이 작성했거나 제출할 적법한 권리 보유, 제3자 권리 비침해
 - [ ] `pnpm build` 통과
+
+## 🐛 이슈
+
+버그 제보 시 OS·버전(설정 > 일반에서 확인)·재현 절차를 함께 적어주세요.
