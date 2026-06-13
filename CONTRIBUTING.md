@@ -4,8 +4,9 @@ Spiral Buddy Red에 관심 가져주셔서 감사합니다. 기여하기 전에 
 
 ## 📜 라이선스 & 기여 동의 (먼저 읽어주세요)
 
-이 프로젝트는 현재 [MIT 라이선스](LICENSE)로 공개됩니다. **Pull Request를 제출하면, 귀하는
-[기여자 라이선스 동의서(CLA)](CLA.md)에 동의한 것으로 간주됩니다.** 핵심만 요약하면:
+이 프로젝트는 현재 [MIT 라이선스](LICENSE)로 공개됩니다. **머지를 위해서는 [기여자 라이선스
+동의서(CLA)](CLA.md)에 서명**해야 합니다(PR을 열면 CLA Assistant 봇이 자동 요청 — 아래
+[CLA 서명 방법](#cla-서명-방법-cla-assistant-lite) 참고). 핵심만 요약하면:
 
 - 귀하의 기여는 **공개 시점 기준 MIT로 공개**됩니다. 다만 [CLA](CLA.md) §1에 따라 프로젝트
   소유자는 기여를 **재라이선스(상용·독점·이중 라이선스 포함)** 할 권리를 보유합니다. 즉
@@ -22,14 +23,28 @@ Spiral Buddy Red에 관심 가져주셔서 감사합니다. 기여하기 전에 
 
 ### DCO와 CLA의 차이 (둘 다 필요)
 
-| | DCO (sign-off) | CLA |
+| | DCO (sign-off) | CLA (서명 봇) |
 |---|---|---|
-| **무엇** | 권리 보유 자기 인증 | 재라이선스·특허·저작인격권·지분 관련 계약 |
-| **방식** | 모든 커밋에 `Signed-off-by` | PR 본문 체크박스 동의 |
-| **검사** | `git commit -s` + 자동 검사 | PR 체크박스 + 자동 검사 |
+| **무엇** | 커밋별 출처 자기 인증 | 재라이선스·특허·저작인격권·지분 조항 동의 |
+| **방식** | 모든 커밋에 `Signed-off-by` | PR에서 **CLA Assistant 봇에 1회 서명** |
+| **검사** | `git commit -s` + 자동 검사 | 봇이 서명 여부를 status check로 강제 |
 
 > DCO만으로는 소유자가 재라이선스할 권리가 생기지 않습니다 — **CLA가 그 권리를 부여**합니다.
 > 둘 다 충족해야 머지됩니다.
+
+### CLA 서명 방법 (CLA Assistant Lite)
+
+PR을 열면 **CLA Assistant 봇**이 자동으로 [CLA](CLA.md) 서명을 요청하는 코멘트를 답니다.
+[CLA.md](CLA.md)를 읽으신 뒤, 봇이 안내한 다음 문구를 **그대로 이 PR에 코멘트**해주세요:
+
+```
+I have read the CLA Document and I hereby sign the CLA
+```
+
+- 서명자·시각·동의한 CLA 버전이 이 저장소의 `cla-signatures` 브랜치(`signatures/v1/cla.json`)에
+  기록됩니다. **외부 서비스 없이** 저장소 안에 보관됩니다.
+- 한 번 서명하면 이후 PR은 자동 인식됩니다(매번 서명 X). 서명은 과거 기여에도 소급 적용됩니다.
+- 회사를 대신해 기여한다면 [기업용 CLA](CORPORATE_CLA.md)도 함께 제출하세요.
 
 ## ✍️ DCO Sign-off (필수)
 
