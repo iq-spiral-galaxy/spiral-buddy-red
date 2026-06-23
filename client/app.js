@@ -188,7 +188,10 @@ function prettyName(name) {
       if (special) return special;
       return w.charAt(0).toUpperCase() + w.slice(1);
     });
-  return words.length ? words.join(" ") : String(name);
+  const joined = words.length ? words.join(" ") : String(name);
+  // v0.4.15 — sub-roadmap/레포 이름 앞 "Ch1"/"Chapter01"/"챕터1" prefix 제거(표시 전용).
+  // Ch/Chapter 바로 뒤 숫자일 때만. 정렬 순서는 sortKey가 따로 보존.
+  return joined.replace(/^\s*(?:chapter|챕터|ch)\s*\d+\s*[-:.)\]]*\s*/i, "").trim() || joined;
 }
 
 const CATEGORY_ICON_BY_NAME = {
