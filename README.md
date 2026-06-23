@@ -15,7 +15,10 @@
 
 ---
 
-## ⚡ 30초 설치 (한 줄 명령)
+<details>
+<summary>⚡ <b>30초 설치 — 한 줄 명령으로 바로 받기</b> &nbsp;(클릭해서 펼치기)</summary>
+
+<br/>
 
 > 💡 **API 호출 X — 어떤 버전인지 신경 X.** 아래 명령들은 GitHub Releases의 고정된 `latest` 별칭 URL을 사용해 다운로드합니다. 시간당 제한(rate-limit) 걸리지 않습니다.
 
@@ -118,6 +121,8 @@ Red는 **AI와 수학**에 집중합니다:
 - 👁️ **비전 · 오디오** — Layer 4-C/E: ViT · Diffusion · NeRF + 음성 (5 repos)
 - ⚙️ **AI 시스템** — Layer 5: PyTorch Internals · 분산 학습 · MLOps (4 repos)
 - 🧭 **전체 딥다이브** — Layer 0→6 전부 (48 repos)
+
+</details>
 
 ---
 
