@@ -1,23 +1,35 @@
 :root {
-  --bg: #170e0d;
-  --bg-elev: #221716;
-  --bg-elev-2: #2c201f;
-  --border: #3d3130;
-  --border-soft: #2d2221;
-  --text: #f3e8e6;
-  --text-dim: #9ba3ad;
-  --text-faint: #6e7681;
-  --accent: #ff8f7e;
-  --accent-2: #f6c294;
-  --user: #6b352d;
-  --assistant: #281d1c;
-  --success: #3fb950;
-  --error: #f85149;
-  --font-sans:
-    -apple-system, BlinkMacSystemFont, "Pretendard", "Apple SD Gothic Neo",
-    "Segoe UI", "Noto Sans KR", sans-serif;
-  --font-mono:
-    "JetBrains Mono", "SF Mono", Monaco, "Cascadia Code", Consolas, monospace;
+  --bg: #0f0908;
+  --bg-elev: #1e1211;
+  --bg-elev-1: #1b1110;
+  --bg-elev-2: #271817;
+  --bg-elev-3: #352220;
+  --border: rgba(148, 169, 190, 0.2);
+  --border-soft: rgba(148, 169, 190, 0.12);
+  --text: #f8eeed;
+  --text-dim: #a9b7c0;
+  --text-faint: #6f7e89;
+  --accent: #ff9a8a;
+  --accent-2: #ffd0a7;
+  --accent-warm: #ffd58a;
+  --accent-green: #67e9bf;
+  --success: #67e9bf;
+  --error: #ff807a;
+  --danger: #ff8b86;
+  --danger-bg: rgba(255, 128, 122, 0.13);
+  --user: linear-gradient(145deg, rgba(120, 58, 48, 0.88), rgba(113, 57, 48, 0.92));
+  --assistant: rgba(30, 18, 17, 0.82);
+  --surface-glass: rgba(29, 17, 16, 0.72);
+  --surface-glass-strong: rgba(37, 21, 20, 0.9);
+  --shadow-soft: 0 18px 54px rgba(0, 0, 0, 0.34);
+  --shadow-glow: 0 0 34px rgba(255, 154, 138, 0.16);
+  --font-display: "Space Grotesk", "Inter", -apple-system, BlinkMacSystemFont,
+    "Pretendard", sans-serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Pretendard",
+    "Apple SD Gothic Neo", "Segoe UI", "Noto Sans KR", sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", Monaco, "Cascadia Code", Consolas,
+    monospace;
+  --topbar-h: 64px;
 }
 
 * {
@@ -1699,15 +1711,6 @@ body.light-mode .domain-header:hover {
    기존 셀렉터들을 후방 override
    ============================================================ */
 
-:root {
-  --font-display: "Space Grotesk", "Inter", -apple-system, BlinkMacSystemFont,
-    "Pretendard", sans-serif;
-  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Pretendard",
-    "Apple SD Gothic Neo", "Segoe UI", "Noto Sans KR", sans-serif;
-  --font-mono: "JetBrains Mono", "SF Mono", Monaco, "Cascadia Code", Consolas,
-    monospace;
-}
-
 /* ─── Brand 헤더 (큰 로고 + 모델 셀렉터) ─── */
 
 .brand {
@@ -3375,33 +3378,6 @@ body.sidebar-collapsed .messages {
 /* ============================================================
    Phase 2.4 — Quiet luminous polish
    ============================================================ */
-
-:root {
-  --bg: #0f0908;
-  --bg-elev-1: #1b1110;
-  --bg-elev: #1e1211;
-  --bg-elev-2: #271817;
-  --bg-elev-3: #352220;
-  --border: rgba(148, 169, 190, 0.2);
-  --border-soft: rgba(148, 169, 190, 0.12);
-  --text: #f8eeed;
-  --text-dim: #a9b7c0;
-  --text-faint: #6f7e89;
-  --accent: #ff9a8a;
-  --accent-2: #ffd0a7;
-  --accent-warm: #ffd58a;
-  --accent-green: #67e9bf;
-  --success: #67e9bf;
-  --error: #ff807a;
-  --danger: #ff8b86;
-  --danger-bg: rgba(255, 128, 122, 0.13);
-  --user: linear-gradient(145deg, rgba(120, 58, 48, 0.88), rgba(113, 57, 48, 0.92));
-  --assistant: rgba(30, 18, 17, 0.82);
-  --surface-glass: rgba(29, 17, 16, 0.72);
-  --surface-glass-strong: rgba(37, 21, 20, 0.9);
-  --shadow-soft: 0 18px 54px rgba(0, 0, 0, 0.34);
-  --shadow-glow: 0 0 34px rgba(255, 154, 138, 0.16);
-}
 
 html,
 body {
@@ -5146,10 +5122,6 @@ body.lookup-fullscreen .lookup-panel-mini.icon-btn svg {
  *   챕터 제목은 1줄 ellipsis로 묶음.
  * ───────────────────────────────────────────────────────── */
 
-:root {
-  --topbar-h: 64px;
-}
-
 /* 토픽바 — fixed height, baseline 일치 */
 #topbar {
   min-height: var(--topbar-h) !important;
@@ -6051,26 +6023,7 @@ body.light-mode .motion-opt.active {
   box-shadow: inset 0 0 0 1px rgba(246, 85, 60, 0.32);
 }
 
-/* ─── 1) CSS 변수 override ─── */
-
-body.light-mode {
-  --bg: #faf5f4;
-  --bg-elev: #ffffff;
-  --bg-elev-2: #f6efee;
-  --border: #d4dae3;
-  --border-soft: #e3e7ee;
-  --text: #331c1a;
-  --text-dim: #4a5468;
-  --text-faint: #7d8696;
-  --accent: #eb3f25;      /* 빨강 (다크의 scarlet 자리) */
-  --accent-2: #f7a45c;    /* 주황 */
-  --user: #f3cbc5;
-  --assistant: #f7f1f0;
-  --success: #16a34a;
-  --error: #dc2626;
-}
-
-/* ─── 2) html/body 베이스 ─── */
+/* ─── html/body 베이스 (light) ─── */
 
 body.light-mode {
   background: var(--bg);
