@@ -985,11 +985,6 @@ function downloadFile(url, dest, onProgress, redirectsLeft = 5) {
   });
 }
 
-ipcMain.handle("app:install-update", async (_e, { version }) => {
-  if (!version) return { ok: false, reason: "no version" };
-  // v0.5.74 — 로그를 고정 위치에 (tmpdir은 사용자가 못 찾음)
-  const logPath = path.join(app.getPath("userData"), "last-update.log");
-
   // ── Windows (v0.5.75) — PowerShell 스크립트 방식 폐기, 직접 방식으로.
   //
   // 기존: detached PowerShell이 다운로드+설치 → 어떤 단계가 실패해도
@@ -1004,7 +999,7 @@ ipcMain.handle("app:install-update", async (_e, { version }) => {
   //      — --force-run은 electron-builder NSIS의 공식 옵션 (설치 후 자동 실행)
   //      — Node https 다운로드는 mark-of-the-web이 안 붙어 SmartScreen 차단 없음
   //   3. 그 후에만 앱 종료. 설치 실패는 v0.5.74 marker가 다음 부팅 때 감지.
-  if (process.platform === "win32") {
+async function installUpdateWindows(version, logPath) {
     const exeName = `Spiral.Buddy.Red.Setup.${version}.exe`;
     const url = `https://github.com/${GH_OWNER}/${GH_REPO}/releases/download/v${version}/${exeName}`;
     const dest = path.join(os.tmpdir(), `spiral-buddy-red-setup-${version}.exe`);
@@ -1083,9 +1078,10 @@ ipcMain.handle("app:install-update", async (_e, { version }) => {
     }
     setTimeout(() => app.quit(), 800);
     return { ok: true, mode: "windows-direct", logPath };
-  }
+}
 
-  // ── macOS / 기타 — 기존 스크립트 방식 유지 (안정 동작 확인됨)
+// ── macOS / 기타 — 기존 스크립트 방식 유지 (안정 동작 확인됨)
+async function installUpdateMacOS(version, logPath) {
   const script = buildInstallScript(version, logPath);
   if (!script) {
     shell.openExternal(
@@ -1127,6 +1123,16 @@ ipcMain.handle("app:install-update", async (_e, { version }) => {
       reason: err instanceof Error ? err.message : String(err),
     };
   }
+}
+
+ipcMain.handle("app:install-update", async (_e, { version }) => {
+  if (!version) return { ok: false, reason: "no version" };
+  // v0.5.74 — 로그를 고정 위치에 (tmpdir은 사용자가 못 찾음)
+  const logPath = path.join(app.getPath("userData"), "last-update.log");
+  if (process.platform === "win32") {
+    return installUpdateWindows(version, logPath);
+  }
+  return installUpdateMacOS(version, logPath);
 });
 
 // ─── Vault 자동 감지 ─────────────────────────────────────────
@@ -1333,6 +1339,14 @@ ipcMain.handle("settings:remove-workspace", async (_e, args) => {
   return { ok: true, deletedPaths, errors };
 });
 
+// v0.5.52 — 같은 roadmapRoot를 가리키는 워크스페이스인지 (대소문자/공백 정규화 비교).
+function sameRoadmapRoot(w, roadmapRoot) {
+  return (
+    (w.roadmapRoot ?? "").trim().toLowerCase() ===
+    (roadmapRoot ?? "").trim().toLowerCase()
+  );
+}
+
 // Git URL 클론 또는 기존 디렉토리 지정으로 새 워크스페이스 추가
 ipcMain.handle("settings:add-workspace", async (event, args) => {
   const cfg = loadConfig();
@@ -1437,10 +1451,8 @@ ipcMain.handle("settings:add-workspace", async (event, args) => {
 
   // v0.5.52 — 같은 roadmapRoot를 가리키는 워크스페이스가 이미 있으면 그걸 활성화하고 반환.
   // 중복 생성 차단.
-  const existing = cfg.workspaces.find(
-    (w) =>
-      (w.roadmapRoot ?? "").trim().toLowerCase() ===
-      (roadmapRoot ?? "").trim().toLowerCase(),
+  const existing = cfg.workspaces.find((w) =>
+    sameRoadmapRoot(w, roadmapRoot),
   );
   if (existing) {
     cfg.activeWorkspaceId = existing.id;
