@@ -74,8 +74,8 @@ Phase 0 끝나면 `pnpm i && pnpm build`로 검증하고 첫 태그(v0.1.0) 전�
 
 marked/marked-highlight/marked-katex-extension/highlight.js/DOMPurify/KaTeX(CSS+woff2)를
 esm.sh·jsdelivr 대신 **client/vendor/ 로컬 번들**로 동봉 — CDN 장애 시에도 앱이 뜬다.
-- 재생성: `pnpm vendor` (scripts/build-vendor.mjs). 산출물은 git에 커밋 (CI 재빌드 없음).
-- 버전 단일 소스: package.json devDependencies. 라이브러리 올릴 땐 devDep 변경 → `pnpm vendor` → 커밋.
+- 재생성: `pnpm client:vendor` (scripts/build-client-vendor.mjs). 산출물은 git에 커밋 (CI 재빌드 없음).
+- 버전 단일 소스: package.json devDependencies. 라이브러리 올릴 땐 devDep 변경 → `pnpm client:vendor` → 커밋.
 - highlight.js는 lib/common(~37개 언어)만 — 미지원 언어는 plaintext fallback.
 - Google Fonts만 CDN 잔존 (미로드 시 시스템 폰트 fallback이라 치명적이지 않음).
 

@@ -33,10 +33,8 @@ import {
   CONTEXT_ICON_SVG,
 } from "../client/icons.js";
 
-// RED divergence: svgIcon() is module-private in red's icons.js (Blue exports it).
-// We exercise the same SVG-generation logic through groupIconHtml(), the thinnest
-// public wrapper: groupIconHtml(name) === `<span ...>` + svgIcon(name,"group-icon-svg").
-// This helper unwraps the span to recover the inner <svg> svgIcon would produce.
+// Exercise SVG generation through the public group wrapper so these tests also
+// verify the wrapper class contract.
 function svgIconViaGroup(name: string): string {
   const html = groupIconHtml(name);
   const m = html.match(/<svg [\s\S]*<\/svg>/);
@@ -529,7 +527,7 @@ describe("stream constants", () => {
 });
 
 // ───────────────────────────────────────────────────────────────────────────
-// icons.js — svgIcon (private in red; tested via groupIconHtml wrapper)
+// icons.js — svgIcon (tested via groupIconHtml wrapper)
 // ───────────────────────────────────────────────────────────────────────────
 describe("icons.svgIcon (via groupIconHtml)", () => {
   test("known icon embeds its body and wraps in <svg>…</svg>", () => {
@@ -547,7 +545,6 @@ describe("icons.svgIcon (via groupIconHtml)", () => {
     assert.equal(out, folder);
   });
 
-  // RED: svgIcon is private; the public wrapper fixes className to "group-icon-svg".
   test("wrapper applies its className to the svg", () => {
     assert.ok(svgIconViaGroup("bolt").includes('class="group-icon-svg"'));
   });
@@ -590,6 +587,14 @@ describe("icons.categoryIconHtml", () => {
     // both map to shuffle
     assert.ok(dash.includes('polyline points="16 3 21 3 21 8"'));
     assert.equal(dash, space);
+  });
+
+  test("Red의 AI·수학 도메인 아이콘을 공통 UI 이식 뒤에도 보존한다", () => {
+    assert.equal(resolveIconName({ name: "Mathematics" }), "sigma");
+    assert.equal(resolveIconName({ name: "Neural Network Theory" }), "network");
+    assert.equal(resolveIconName({ name: "Reinforcement Learning" }), "target");
+    assert.equal(resolveIconName({ name: "Frontier LLM" }), "compass");
+    assert.ok(categoryIconHtml({ name: "Mathematics" }).includes("M18 5H6.5"));
   });
 });
 

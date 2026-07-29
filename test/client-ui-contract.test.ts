@@ -324,9 +324,10 @@ describe("client UI contracts", () => {
       brandCss,
       /\.composer \{[\s\S]*?border-top-left-radius: 16px !important;/,
     );
-    assert.match(html, /red-brand\.css\?v=0\.6\.10/);
-    assert.match(html, /helix\.css\?v=0\.6\.10/);
-    assert.match(html, /app\.js\?v=0\.6\.10/);
+    assert.match(html, /red-brand\.css\?v=0\.6\.11/);
+    assert.match(html, /helix\.css\?v=0\.6\.11/);
+    assert.match(html, /product-polish\.css\?v=0\.6\.11/);
+    assert.match(html, /app\.js\?v=0\.6\.11/);
   });
 
   test("the 820px mobile shell keeps the main column visible and hides inert resizers", () => {
@@ -431,5 +432,15 @@ describe("client UI contracts", () => {
       brandCss,
       /\.message\.user \.content \{[\s\S]*?width: fit-content !important;[\s\S]*?justify-self: end;/,
     );
+  });
+
+  test("AI preview cards render formulas through the safe Markdown pipeline", () => {
+    const previewCard = app.slice(
+      app.indexOf("function _renderAiCardMarkdown"),
+      app.indexOf("// ──────────────────────────────────────────────────────────\n// 설정"),
+    );
+    assert.match(previewCard, /renderMarkdown\(String\(value/);
+    assert.match(previewCard, /_renderAiCardMarkdown\(card\.summary\)/);
+    assert.doesNotMatch(previewCard, /escapeHtml\(card\.summary\)/);
   });
 });

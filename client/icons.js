@@ -1,8 +1,8 @@
-// iq-spiral-buddy client (Red) — 아이콘 SVG + 헬퍼 (DOM/state 비의존, 공유 모듈)
-// CATEGORY_ICON_BY_NAME / ICON_SVG / svgIcon은 모듈 내부 전용.
+// iq-spiral-buddy client — SVG 아이콘 데이터 + 렌더 헬퍼 (순수, 5색 공유 모듈)
 
+// 카테고리/도메인 이름 → 아이콘 키. (도메인 헤더도 같은 lookup 사용)
 const CATEGORY_ICON_BY_NAME = {
-  // iq-ai-lab Layer 0~6 도메인 (도메인 = 카테고리 1:1)
+  // Red — AI·수학 로드맵 도메인
   mathematics: "sigma",
   "ml theory": "chart",
   "neural network theory": "network",
@@ -14,7 +14,7 @@ const CATEGORY_ICON_BY_NAME = {
   "audio & speech": "wave",
   systems: "monitor",
   "frontier llm": "compass",
-  // (이하 Blue 시절 키 — 로컬 폴더명 매칭용으로 유지)
+  // Backend categories
   "java core": "coffee",
   "spring ecosystem": "leaf",
   "architecture & design": "temple",
@@ -25,7 +25,6 @@ const CATEGORY_ICON_BY_NAME = {
   "security engineering": "lock",
   "performance & quality": "bolt",
   // v0.5.52~55 — 도메인 자체 + 자식 카테고리 둘 다 들어갈 수 있음.
-  // 도메인 헤더에서도 같은 lookup을 사용하므로 도메인 이름들도 포함.
   foundations: "rock",
   languages: "brick",
   "languages & runtimes": "brick",
@@ -75,23 +74,36 @@ const ICON_SVG = {
   shuffle: `<polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/>`,
   dna: `<path d="M5 4c14 4 0 12 14 16"/><path d="M19 4c-14 4 0 12 -14 16"/><line x1="7" y1="8" x2="14" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="17" y2="16"/>`,
   search: `<circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.5" y1="15.5" x2="21" y2="21"/>`,
+  bookmark: `<path d="M6 4.5A2.5 2.5 0 0 1 8.5 2h7A2.5 2.5 0 0 1 18 4.5V21l-6-3.8L6 21V4.5Z"/>`,
+  book: `<path d="M3 4.5A2.5 2.5 0 0 1 5.5 2H11a3 3 0 0 1 3 3v16a3 3 0 0 0-3-3H3V4.5Z"/><path d="M21 4.5A2.5 2.5 0 0 0 18.5 2H14v19a3 3 0 0 1 3-3h4V4.5Z"/>`,
+  note: `<path d="M6 2h8l4 4v16H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"/><path d="M14 2v5h5M8 12h8M8 16h6"/>`,
+  mic: `<rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10v1a7 7 0 0 0 14 0v-1M12 18v4M8 22h8"/>`,
+  download: `<path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 20h14"/>`,
+  message: `<path d="M5 4h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-1-1.73V6a2 2 0 0 1 2-2Z"/>`,
+  check: `<polyline points="20 6 9 17 4 12"/>`,
+  sparkle: `<path d="M12 3.5l1.7 5.8 5.8 1.7-5.8 1.7L12 18.5l-1.7-5.8L4.5 11l5.8-1.7z"/><path d="M18.3 4.2l.5 1.7 1.7.5-1.7.5-.5 1.7-.5-1.7-1.7-.5 1.7-.5z"/>`,
   smartphone: `<rect x="6.5" y="2.5" width="11" height="19" rx="2.2"/><line x1="10" y1="5.5" x2="14" y2="5.5"/><circle cx="12" cy="18.5" r="0.8" fill="currentColor" stroke="none"/>`,
-  // v0.5.55 — Backend 도메인용 wrench
-  wrench: `<path d="M14.7 6.3a4.5 4.5 0 0 1 5.6 5.6L18 14l-4-4 0.7-2.1z"/><path d="M14 10l-9 9a2 2 0 0 1-3-3l9-9"/>`,
-  // v0.2.1 (Red) — iq-ai-lab Layer 도메인 아이콘
+  // Red — AI·수학 로드맵 도메인
   sigma: `<path d="M18 5H6.5l6.5 7-6.5 7H18"/>`,
   network: `<circle cx="5.5" cy="6" r="2"/><circle cx="18.5" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="m6.8 7.7 4 8.3"/><path d="m17.2 7.7-4 8.3"/><path d="M7.5 6h9"/>`,
   target: `<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/>`,
   chat: `<path d="M20 14a2 2 0 0 1-2 2H9l-5 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/>`,
-  eye: `<path d="M2.5 12S6.5 5.5 12 5.5 21.5 12 21.5 12 17.5 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/>`,
+  eye: `<path d="M2.5 12S6.5 5.5 12 5.5 21.5 12 21.5 12 17.5 18.5 12 18.5 2.5 12 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/>`,
   pen: `<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>`,
   wave: `<line x1="4" y1="9" x2="4" y2="15"/><line x1="8" y1="6" x2="8" y2="18"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="16" y1="6" x2="16" y2="18"/><line x1="20" y1="9" x2="20" y2="15"/>`,
   compass: `<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>`,
+  // v0.5.55 — Backend 도메인용 wrench
+  wrench: `<path d="M14.7 6.3a4.5 4.5 0 0 1 5.6 5.6L18 14l-4-4 0.7-2.1z"/><path d="M14 10l-9 9a2 2 0 0 1-3-3l9-9"/>`,
 };
 
-function svgIcon(name, className = "inline-icon") {
+export function svgIcon(name, className = "inline-icon") {
   const body = ICON_SVG[name] ?? ICON_SVG.folder;
   return `<svg class="${className}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
+}
+
+export function uiIconHtml(name, className = "ui-symbol") {
+  const body = ICON_SVG[name] ?? ICON_SVG.note;
+  return `<svg class="${className}" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${body}</svg>`;
 }
 
 export function resolveIconName(entity, kind = "category") {
@@ -167,4 +179,5 @@ export const DEPTH_ICONS = {
 export const CONTEXT_ICON_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`;
 
 export const THUMBS_UP_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10v12"/><path d="M15 5.88L14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H7"/><path d="M3 22h4V10H3z"/></svg>`;
+
 export const THUMBS_DOWN_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 14V2"/><path d="M9 18.12L10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H17"/><path d="M21 2h-4v12h4z"/></svg>`;

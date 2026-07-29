@@ -1,14 +1,18 @@
-// iq-spiral-buddy client (Red) — 마크다운 렌더링 (marked 설정 + KaTeX + sanitize, 공유 모듈)
-// marked는 vendor 번들 기준 싱글턴이라 여기서 1회 설정하면 모든 import 지점에 적용됨.
+// iq-spiral-buddy client — Markdown, code highlight, KaTeX and safe streaming.
+// 모든 의존성은 release에 함께 번들되어 네트워크 없이 동작한다.
 
-// v0.4.0 — CDN(esm.sh) 의존 제거. 로컬 vendor 번들 사용 (scripts/build-vendor.mjs,
-// 버전은 package.json devDependencies가 단일 소스). CDN 장애 시에도 앱이 뜬다.
-import { marked } from "./vendor/marked.js";
-import { markedHighlight } from "./vendor/marked-highlight.js";
-import markedKatex from "./vendor/marked-katex-extension.js";
-import hljs from "./vendor/highlight.js";
-import DOMPurify from "./vendor/dompurify.js";
+import {
+  marked,
+  markedHighlight,
+  markedKatex,
+  hljs,
+  DOMPurify,
+} from "./vendor/markdown-deps.js";
+import { normalizeMathDelimiters } from "./math.js";
 import { escapeAttr } from "./util.js";
+
+const SOURCE_BY_ELEMENT = new WeakMap();
+const MATH_RENDER_INTERVAL_MS = 84;
 
 marked.use(
   markedHighlight({
@@ -19,87 +23,178 @@ marked.use(
     },
   }),
 );
-// v0.3.0 (Red) — 수식 렌더링. marked 토크나이저 레벨에서 $...$/$$...$$를
-// 집어가므로 수식 안 언더스코어($x_1$)가 <em>으로 깨지지 않고, 코드
-// 스팬/펜스 안의 $는 건드리지 않는다.
-// - nonStandard: 한국어는 조사가 $ 바로 뒤에 붙음("$\\mathbb{R}^3$의") —
-//   표준 모드(공백 경계 요구)면 그런 수식이 통째로 안 잡힘. 필수.
-// - output "html": MathML 출력 생략 — DOMPurify가 <annotation> 등을
-//   걷어내는 것과의 상호작용을 원천 차단 (시각 출력은 동일).
-// v0.4.1 — 수식 클릭 → LaTeX 원본 복사.
-// output:"html"은 원본 TeX를 DOM에 남기지 않으므로, extension의 renderer를
-// 래핑해 원본을 data-tex로 보존한다 (토크나이저는 그대로 — 파싱 회귀 없음.
-// DOMPurify는 data-* 속성을 기본 허용하므로 sanitize를 통과한다).
-const _katexExt = markedKatex({
+
+// AI 출력은 신뢰할 수 없는 입력으로 취급한다. 외부 리소스/HTML 명령은
+// 차단하고, 과도한 크기와 매크로 확장을 제한한다. MathML을 함께 출력해
+// 스크린 리더가 시각 수식과 같은 의미를 읽을 수 있게 한다.
+const mathExtension = markedKatex({
   throwOnError: false,
   nonStandard: true,
-  output: "html",
+  output: "htmlAndMathml",
+  trust: false,
+  strict: "ignore",
+  maxSize: 20,
+  maxExpand: 500,
+  errorColor: "#b42318",
 });
-for (const ext of _katexExt.extensions ?? []) {
-  const origRenderer = ext.renderer;
-  if (typeof origRenderer !== "function") continue;
-  ext.renderer = function (token) {
-    const html = origRenderer.call(this, token);
+
+for (const extension of mathExtension.extensions ?? []) {
+  const renderToken = extension.renderer;
+  if (typeof renderToken !== "function") continue;
+  extension.renderer = function renderAccessibleMath(token) {
+    const html = renderToken.call(this, token);
     if (typeof html !== "string") return html;
-    const display = !!token.displayMode;
-    const cls = display ? "math-src math-src-display" : "math-src";
-    const title = display ? ` title="클릭하면 LaTeX 복사"` : "";
-    return `<span class="${cls}" data-tex="${escapeAttr(token.text ?? "")}"${title}>${html}</span>`;
+    const source = String(token.text ?? "");
+    const display = Boolean(token.displayMode);
+    const hasError = html.includes("katex-error");
+    const classes = [
+      "math-src",
+      display ? "math-src-display" : "",
+      hasError ? "math-src-error" : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+    const label = hasError
+      ? "해석하지 못한 수식입니다. 원본 LaTeX를 복사하려면 누르세요."
+      : "원본 LaTeX를 복사하려면 누르세요.";
+    const newline = extension.name === "blockKatex" ? "\n" : "";
+    return `<span class="${classes}" data-tex="${escapeAttr(source)}" data-display="${display ? "true" : "false"}" role="button" tabindex="0" aria-label="${escapeAttr(label)}" title="${escapeAttr(label)}">${html}<span class="math-copy-feedback" aria-live="polite"></span></span>${newline}`;
   };
 }
-marked.use(_katexExt);
+
+marked.use(mathExtension);
 marked.setOptions({ breaks: true, gfm: true });
 
-// 수식 클릭 → 마크다운/Obsidian에 바로 붙일 수 있게 구분자 포함해 복사.
-// 텍스트 드래그 중(선택 존재)에는 가로채지 않는다.
-document.addEventListener("click", (e) => {
-  const el = e.target?.closest?.(".math-src");
-  if (!el) return;
-  const sel = window.getSelection?.();
-  if (sel && !sel.isCollapsed) return;
-  const tex = el.dataset.tex ?? "";
-  if (!tex) return;
-  const wrapped = el.classList.contains("math-src-display")
-    ? `$$${tex}$$`
-    : `$${tex}$`;
-  navigator.clipboard?.writeText(wrapped).then(() => {
-    el.classList.add("math-copied");
-    setTimeout(() => el.classList.remove("math-copied"), 1000);
-  });
-});
-
-// LLM이 가끔 \( \) / \[ \] 구분자로 수식을 내보냄 — KaTeX extension은
-// $ 계열만 처리하므로 $ 계열로 정규화. 코드 펜스/인라인 코드 구간은
-// 정규식 escape(\( 등)가 흔하므로 절대 건드리지 않는다.
-function normalizeMathDelimiters(raw) {
-  return String(raw)
-    .split(/(```[\s\S]*?(?:```|$)|~~~[\s\S]*?(?:~~~|$)|`[^`\n]*`)/g)
-    .map((seg, i) => {
-      if (i % 2 === 1) return seg; // 코드 구간
-      return seg
-        .replace(/\\\[([\s\S]+?)\\\]/g, (_, body) => `\n$$${body}$$\n`)
-        .replace(/\\\(([\s\S]+?)\\\)/g, (_, body) => `$${body}$`);
-    })
-    .join("");
-}
-
-// v0.5.77 — 모든 마크다운 → HTML 변환을 sanitize 통과시킴.
-// LLM 출력은 챕터 본문(임의 마크다운 파일)의 영향을 받으므로
-// <img onerror=...> 류가 본문을 타고 응답에 섞일 가능성을 차단.
-// marked.parse를 직접 쓰지 말고 항상 이 함수를 거칠 것.
-export function renderMarkdown(raw) {
-  return DOMPurify.sanitize(marked.parse(normalizeMathDelimiters(raw)));
-}
-
-// v0.5.75 — marked.parse 안전 래퍼.
-// 기존엔 streamInto의 최종 parse가 무방비라, 특정 마크다운(깨진 테이블,
-// 비정상 중첩 등)에서 marked가 throw하면 startSession catch로 전파 →
-// enableSessionUi(false) → "Buddy 메시지는 보이는데 입력이 영구 비활성"
-// 증상 발생. 파싱 실패 시 plain text로 graceful 표시.
-export function safeMarkedInto(el, raw) {
-  try {
-    el.innerHTML = renderMarkdown(raw);
-  } catch {
-    el.textContent = raw;
+export async function copyText(text) {
+  const value = String(text ?? "");
+  if (globalThis.navigator?.clipboard?.writeText) {
+    await globalThis.navigator.clipboard.writeText(value);
+    return;
   }
+  if (typeof document === "undefined") {
+    throw new Error("클립보드를 사용할 수 없습니다.");
+  }
+  const textarea = document.createElement("textarea");
+  textarea.value = value;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+  const copied = document.execCommand?.("copy");
+  textarea.remove();
+  if (!copied) throw new Error("클립보드 복사에 실패했습니다.");
+}
+
+function wrappedMathSource(element) {
+  const tex = element.dataset.tex ?? "";
+  return element.dataset.display === "true" ? `$$${tex}$$` : `$${tex}$`;
+}
+
+async function copyMathElement(element) {
+  const feedback = element.querySelector(".math-copy-feedback");
+  try {
+    await copyText(wrappedMathSource(element));
+    element.classList.add("math-copied");
+    if (feedback) feedback.textContent = "LaTeX를 복사했습니다.";
+  } catch {
+    element.classList.add("math-copy-failed");
+    if (feedback) feedback.textContent = "복사하지 못했습니다.";
+  }
+  setTimeout(() => {
+    element.classList.remove("math-copied", "math-copy-failed");
+    if (feedback) feedback.textContent = "";
+  }, 1400);
+}
+
+if (typeof document !== "undefined") {
+  document.addEventListener("click", (event) => {
+    const element = event.target?.closest?.(".math-src");
+    if (!element) return;
+    const selection = globalThis.getSelection?.();
+    if (selection && !selection.isCollapsed) return;
+    void copyMathElement(element);
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    const element = event.target?.closest?.(".math-src");
+    if (!element) return;
+    event.preventDefault();
+    void copyMathElement(element);
+  });
+}
+
+export function renderMarkdown(raw) {
+  const normalized = normalizeMathDelimiters(raw);
+  const rendered = marked.parse(normalized);
+  return DOMPurify.sanitize(rendered, {
+    USE_PROFILES: { html: true, mathMl: true },
+    ADD_ATTR: ["data-tex", "data-display", "role", "tabindex", "aria-label"],
+  });
+}
+
+export function safeMarkedInto(element, raw) {
+  if (!element) return;
+  const source = String(raw ?? "");
+  SOURCE_BY_ELEMENT.set(element, source);
+  try {
+    element.innerHTML = renderMarkdown(source);
+  } catch {
+    element.textContent = source;
+  }
+}
+
+export function getMarkdownSource(element) {
+  return SOURCE_BY_ELEMENT.get(element) ?? "";
+}
+
+// 긴 증명이나 행렬을 스트리밍할 때 매 청크마다 전체 Markdown/KaTeX를
+// 다시 파싱하지 않는다. 일정 간격으로 최신 누적본만 렌더하고 마지막에는
+// 반드시 원문 전체를 한 번 확정 렌더한다.
+export function createProgressiveMarkdownRenderer(
+  element,
+  { interval = MATH_RENDER_INTERVAL_MS, onRender } = {},
+) {
+  let source = "";
+  let timer = null;
+  let lastRenderAt = 0;
+
+  const now = () =>
+    globalThis.performance?.now?.() ?? Date.now();
+
+  const render = () => {
+    timer = null;
+    lastRenderAt = now();
+    safeMarkedInto(element, source);
+    onRender?.();
+  };
+
+  element?.classList?.add("is-streaming-markdown");
+
+  return {
+    append(chunk) {
+      source += String(chunk ?? "");
+      if (timer !== null) return;
+      const wait = Math.max(0, interval - (now() - lastRenderAt));
+      timer = setTimeout(render, wait);
+    },
+    finish() {
+      if (timer !== null) {
+        clearTimeout(timer);
+        timer = null;
+      }
+      safeMarkedInto(element, source);
+      element?.classList?.remove("is-streaming-markdown");
+      onRender?.();
+      return source;
+    },
+    cancel() {
+      if (timer !== null) clearTimeout(timer);
+      timer = null;
+      element?.classList?.remove("is-streaming-markdown");
+    },
+    get source() {
+      return source;
+    },
+  };
 }

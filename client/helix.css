@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------------- */
-/* v0.6.10 — direct learning home, quieter search and compact navigation */
+/* v0.6.11 — direct learning home, quieter search and compact navigation */
 /* -------------------------------------------------------------------------- */
 
 .blue-symbol-library {
@@ -66,18 +66,18 @@ body #sidebar > .brand .logo-spiral .spiral-rotate,
 body.motion-on #sidebar > .brand .logo-spiral .spiral-rotate {
   transform-box: view-box;
   transform-origin: 32px 32px;
-  animation: helix-logo-rewind 18s linear infinite !important;
+  animation: helix-logo-rewind 36s linear infinite !important;
 }
 
 #sidebar > .brand .logo-spiral .spiral-line {
   stroke-dasharray: 86 14;
-  animation: helix-logo-flow 4.8s linear infinite;
+  animation: helix-logo-flow 9.6s linear infinite;
 }
 
 #sidebar > .brand .logo-spiral .spiral-flow-dot {
   transform-box: fill-box;
   transform-origin: center;
-  animation: helix-logo-pulse 2.4s ease-in-out infinite;
+  animation: helix-logo-pulse 4.8s ease-in-out infinite;
 }
 
 /* The learning home opens on its content. Geometry stays as a quiet backdrop,

@@ -544,8 +544,8 @@
       </div>
       <div class="hint">학습 노트가 저장될 위치. <code>.obsidian/</code> 디렉토리가 있는 vault 루트나 그 하위 폴더.</div>
       <div class="vault-detected hidden" id="vault-detected"></div>
-      <div class="hint hidden" id="vault-not-found">
-        ⚠️ Obsidian vault를 자동으로 찾지 못했어요.
+      <div class="hint hidden" id="vault-not-found" role="status">
+        Obsidian vault를 자동으로 찾지 못했어요.
         Obsidian이 없다면 <a id="link-obsidian" data-href="https://obsidian.md/download">obsidian.md에서 설치</a>한 뒤
         vault를 하나 만들고 위에서 그 폴더를 선택하세요.
       </div>
@@ -563,35 +563,35 @@
 
       <div class="setup-presets" id="setup-presets">
         <button type="button" class="setup-preset recommended" data-preset="math-core">
-          <div class="setup-preset-head"><span class="setup-preset-emoji">🧮</span><strong>수학 코어</strong><span class="setup-preset-tag">추천</span></div>
+          <div class="setup-preset-head"><span class="setup-preset-emoji" aria-hidden="true">∑</span><strong>수학 코어</strong><span class="setup-preset-tag">추천</span></div>
           <div class="setup-preset-sub">선형대수 · 확률 · 최적화 · 정보이론 (10)</div>
         </button>
         <button type="button" class="setup-preset" data-preset="ml-track">
-          <div class="setup-preset-head"><span class="setup-preset-emoji">📐</span><strong>머신러닝 이론</strong></div>
+          <div class="setup-preset-head"><span class="setup-preset-emoji" aria-hidden="true">ML</span><strong>머신러닝 이론</strong></div>
           <div class="setup-preset-sub">PAC · 커널 · 베이지안 · 그래피컬 (5)</div>
         </button>
         <button type="button" class="setup-preset" data-preset="dl-track">
-          <div class="setup-preset-head"><span class="setup-preset-emoji">🧠</span><strong>딥러닝 트랙</strong></div>
+          <div class="setup-preset-head"><span class="setup-preset-emoji" aria-hidden="true">NN</span><strong>딥러닝 트랙</strong></div>
           <div class="setup-preset-sub">NN 이론 + CNN/RNN/Transformer/GNN (9)</div>
         </button>
         <button type="button" class="setup-preset" data-preset="rl-track">
-          <div class="setup-preset-head"><span class="setup-preset-emoji">🤖</span><strong>강화학습 트랙</strong></div>
+          <div class="setup-preset-head"><span class="setup-preset-emoji" aria-hidden="true">RL</span><strong>강화학습 트랙</strong></div>
           <div class="setup-preset-sub">벨만 방정식부터 PPO/SAC까지 (6)</div>
         </button>
         <button type="button" class="setup-preset" data-preset="llm-track">
-          <div class="setup-preset-head"><span class="setup-preset-emoji">🗣️</span><strong>LLM 트랙</strong></div>
+          <div class="setup-preset-head"><span class="setup-preset-emoji" aria-hidden="true">LLM</span><strong>LLM 트랙</strong></div>
           <div class="setup-preset-sub">NLP → LLM → Frontier 한 줄기 (9)</div>
         </button>
         <button type="button" class="setup-preset" data-preset="vision-audio-track">
-          <div class="setup-preset-head"><span class="setup-preset-emoji">👁️</span><strong>비전 · 오디오</strong></div>
+          <div class="setup-preset-head"><span class="setup-preset-emoji" aria-hidden="true">CV</span><strong>비전 · 오디오</strong></div>
           <div class="setup-preset-sub">ViT · Diffusion · NeRF + 음성 (5)</div>
         </button>
         <button type="button" class="setup-preset" data-preset="systems-track">
-          <div class="setup-preset-head"><span class="setup-preset-emoji">⚙️</span><strong>AI 시스템</strong></div>
+          <div class="setup-preset-head"><span class="setup-preset-emoji" aria-hidden="true">SYS</span><strong>AI 시스템</strong></div>
           <div class="setup-preset-sub">PyTorch Internals · 분산 · MLOps (4)</div>
         </button>
         <button type="button" class="setup-preset heavy" data-preset="full-deep-dive">
-          <div class="setup-preset-head"><span class="setup-preset-emoji">🧭</span><strong>전체 딥다이브</strong><span class="setup-preset-tag heavy">무거움</span></div>
+          <div class="setup-preset-head"><span class="setup-preset-emoji" aria-hidden="true">ALL</span><strong>전체 딥다이브</strong><span class="setup-preset-tag heavy">무거움</span></div>
           <div class="setup-preset-sub">Layer 0→6 전부 · Frontier까지 (48)</div>
         </button>
       </div>
