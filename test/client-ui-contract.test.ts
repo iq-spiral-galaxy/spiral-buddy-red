@@ -354,10 +354,48 @@ describe("client UI contracts", () => {
       productCss,
       /body\.light-mode[\s\S]*?:is\([\s\S]*?#input,[\s\S]*?textarea\.lookup-direct-input,[\s\S]*?\.lookup-direct-context,[\s\S]*?\.lookup-question-text[\s\S]*?\)::placeholder \{[\s\S]*?background: transparent !important;[\s\S]*?background-color: transparent !important;/,
     );
-    assert.match(html, /red-brand\.css\?v=0\.6\.12/);
-    assert.match(html, /helix\.css\?v=0\.6\.12/);
-    assert.match(html, /product-polish\.css\?v=0\.6\.12/);
-    assert.match(html, /app\.js\?v=0\.6\.12/);
+    assert.match(html, /red-brand\.css\?v=0\.6\.13/);
+    assert.match(html, /helix\.css\?v=0\.6\.13/);
+    assert.match(html, /product-polish\.css\?v=0\.6\.13/);
+    assert.match(html, /app\.js\?v=0\.6\.13/);
+  });
+
+  test("the home composer stays compact until a learning session starts", () => {
+    const resizer = app.slice(
+      app.indexOf("function makeResizer("),
+      app.indexOf("// ─── 공통 SVG 아이콘", app.indexOf("function makeResizer(")),
+    );
+    const sessionUi = app.slice(
+      app.indexOf("function enableSessionUi(enabled)"),
+      app.indexOf("function setPending", app.indexOf("function enableSessionUi(enabled)")),
+    );
+
+    assert.match(resizer, /restoreOnInit = true/);
+    assert.match(resizer, /if \(restoreOnInit\) restoreSavedHeight\(\);/);
+    assert.match(
+      resizer,
+      /composerHeightController = makeResizer[\s\S]*?restoreOnInit: false/,
+    );
+    assert.match(
+      resizer,
+      /canResize: \(\) => Boolean\(state\.session\)/,
+    );
+    assert.match(
+      sessionUi,
+      /if \(enabled\) composerHeightController\?\.restoreSavedHeight\(\);[\s\S]*?else composerHeightController\?\.clearFixedHeight\(\);/,
+    );
+    assert.match(
+      sessionUi,
+      /aria-disabled", String\(!enabled\)[\s\S]*?tabIndex = enabled \? 0 : -1/,
+    );
+    assert.match(
+      html,
+      /id="composer-resizer"[^>]*tabindex="-1"[^>]*aria-disabled="true"/,
+    );
+    assert.match(
+      productCss,
+      /body:not\(\.session-active\) \.composer-resizer \{[\s\S]*?cursor: default;/,
+    );
   });
 
   test("the 820px mobile shell keeps the main column visible and hides inert resizers", () => {

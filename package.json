@@ -1,6 +1,6 @@
 {
   "name": "spiral-buddy-red",
-  "version": "0.6.12",
+  "version": "0.6.13",
   "description": "Spiral learning buddy for AI & math. Local desktop app — roadmap-driven sessions, auto-structured notes, spiral revisit detection.",
   "type": "module",
   "main": "electron/main.cjs",

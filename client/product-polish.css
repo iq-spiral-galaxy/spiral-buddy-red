@@ -546,3 +546,8 @@ body:is(.light-mode, .dark-mode)
     padding-inline: 0 !important;
   }
 }
+
+/* The home opens at the natural compact height; resizing begins with a lesson. */
+body:not(.session-active) .composer-resizer {
+  cursor: default;
+}

@@ -4769,23 +4769,43 @@ function initLookupDirectForm() {
 
 // 드래그 핸들로 targetEl 높이 조절 (localStorage 저장 + 더블클릭 리셋).
 // composer/lookup 입력창 리사이저 공통.
-function makeResizer(handleEl, targetEl, { key, min, max }) {
+function makeResizer(
+  handleEl,
+  targetEl,
+  { key, min, max, restoreOnInit = true, canResize = () => true },
+) {
   if (!handleEl || !targetEl) return;
   const updateAriaValue = (height) => {
     handleEl.setAttribute("aria-valuenow", String(Math.round(height)));
   };
-  const saved = parseInt(localStorage.getItem(key) ?? "0", 10);
-  if (saved >= min && saved <= max) {
-    targetEl.style.minHeight = `${saved}px`;
-    targetEl.style.maxHeight = `${saved}px`;
-  }
-  requestAnimationFrame(() => {
-    updateAriaValue(Math.max(min, Math.min(max, targetEl.offsetHeight)));
-  });
+  const syncAriaValue = () => {
+    requestAnimationFrame(() => {
+      updateAriaValue(Math.max(min, Math.min(max, targetEl.offsetHeight)));
+    });
+  };
+  const restoreSavedHeight = () => {
+    const saved = parseInt(localStorage.getItem(key) ?? "0", 10);
+    if (saved >= min && saved <= max) {
+      targetEl.style.minHeight = `${saved}px`;
+      targetEl.style.maxHeight = `${saved}px`;
+    } else {
+      targetEl.style.minHeight = "";
+      targetEl.style.maxHeight = "";
+    }
+    syncAriaValue();
+  };
+  const clearFixedHeight = () => {
+    targetEl.style.minHeight = "";
+    targetEl.style.maxHeight = "";
+    syncAriaValue();
+  };
+  if (restoreOnInit) restoreSavedHeight();
+  else syncAriaValue();
   let dragging = false;
   let startY = 0;
   let startH = 0;
   handleEl.addEventListener("mousedown", (e) => {
+    if (!canResize()) return;
     e.preventDefault();
     dragging = true;
     startY = e.clientY;
@@ -4808,6 +4828,7 @@ function makeResizer(handleEl, targetEl, { key, min, max }) {
   });
   handleEl.addEventListener("keydown", (e) => {
     if (!["ArrowUp", "ArrowDown", "Home", "End"].includes(e.key)) return;
+    if (!canResize()) return;
     e.preventDefault();
     const current = targetEl.offsetHeight;
     const next =
@@ -4825,11 +4846,13 @@ function makeResizer(handleEl, targetEl, { key, min, max }) {
     updateAriaValue(next);
   });
   handleEl.addEventListener("dblclick", () => {
+    if (!canResize()) return;
     targetEl.style.minHeight = "";
     targetEl.style.maxHeight = "";
     localStorage.removeItem(key);
-    requestAnimationFrame(() => updateAriaValue(targetEl.offsetHeight));
+    syncAriaValue();
   });
+  return { restoreSavedHeight, clearFixedHeight };
 }
 
 function initLookupDirectResizer() {
@@ -4844,11 +4867,15 @@ function initLookupDirectResizer() {
 // v0.5.31 #4 Composer 높이 조절 (드래그 핸들)
 // ──────────────────────────────────────────────────────────
 
+let composerHeightController = null;
+
 function initComposerResizer() {
-  makeResizer(els.composerResizer, els.input, {
+  composerHeightController = makeResizer(els.composerResizer, els.input, {
     key: "spiral-buddy:input-height",
     min: 72,
     max: 480,
+    restoreOnInit: false,
+    canResize: () => Boolean(state.session),
   });
 }
 
@@ -7412,6 +7439,12 @@ function updateTopbar() {
 
 function enableSessionUi(enabled) {
   document.body.classList.toggle("session-active", enabled);
+  if (els.composerResizer) {
+    els.composerResizer.setAttribute("aria-disabled", String(!enabled));
+    els.composerResizer.tabIndex = enabled ? 0 : -1;
+  }
+  if (enabled) composerHeightController?.restoreSavedHeight();
+  else composerHeightController?.clearFixedHeight();
   els.input.disabled = !enabled;
   els.sendBtn.disabled = !enabled;
   els.endBtn.disabled = !enabled;
