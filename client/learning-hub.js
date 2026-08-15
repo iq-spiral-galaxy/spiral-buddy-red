@@ -1,4 +1,4 @@
-import { escapeAttr, escapeHtml } from "./util.js";
+import { displayChapterTitle, escapeAttr, escapeHtml } from "./util.js";
 
 function chapterDepth(chapter) {
   const depth = Number(chapter?.maxDepth ?? 0);
@@ -207,7 +207,7 @@ export function buildLearningHubMarkup({
 
   if (selected) {
     focusLabel = focusModeLabel(selected.mode);
-    focusTitle = selected.chapter.title || "제목 없는 챕터";
+    focusTitle = displayChapterTitle(selected.chapter.title) || "제목 없는 챕터";
     focusRationale = selected.rationale;
     focusMeta = `${selectedIndex + 1} / ${list.length} 챕터 · ${roadmapName}`;
     primaryAction = "start";
@@ -228,7 +228,7 @@ export function buildLearningHubMarkup({
       : needsReview
         ? "보강할 이해"
         : "이해의 빈틈 확인";
-    focusTitle = verificationChapter.title || "제목 없는 챕터";
+    focusTitle = displayChapterTitle(verificationChapter.title) || "제목 없는 챕터";
     focusRationale = needsReview
       ? "지난 판단에서 갈린 근거를 다시 확인하고, 놓친 지점에서 다음 나선을 시작해보세요."
       : "그럴듯한 설명 하나를 판정해, 이해했다고 넘긴 부분까지 확인해보세요.";
@@ -241,7 +241,7 @@ export function buildLearningHubMarkup({
 
   if (hasPaused) {
     focusLabel = "멈춘 학습";
-    focusTitle = pausedSession.chapterTitle || "이전 학습";
+    focusTitle = displayChapterTitle(pausedSession.chapterTitle) || "이전 학습";
     focusRationale =
       "대화와 맥락이 그대로 남아 있어, 멈춘 지점에서 바로 이어갈 수 있어요.";
     focusMeta = `${pausedSession.roadmapName || roadmapName} · 저장 전 대화`;

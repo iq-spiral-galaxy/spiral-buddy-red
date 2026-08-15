@@ -5,6 +5,7 @@ import { readFile } from "node:fs/promises";
 const [
   html,
   app,
+  baseCss,
   brandCss,
   productCss,
   helixCss,
@@ -16,6 +17,7 @@ const [
   await Promise.all([
   readFile(new URL("../client/index.html", import.meta.url), "utf8"),
   readFile(new URL("../client/app.js", import.meta.url), "utf8"),
+  readFile(new URL("../client/styles.css", import.meta.url), "utf8"),
   readFile(new URL("../client/red-brand.css", import.meta.url), "utf8"),
   readFile(new URL("../client/product-polish.css", import.meta.url), "utf8"),
   readFile(new URL("../client/helix.css", import.meta.url), "utf8"),
@@ -149,6 +151,25 @@ describe("client UI contracts", () => {
       /return prettyName\(name\);/,
       "Red should preserve its AI/math acronym-aware prettyName formatter",
     );
+    assert.match(app, /label: displayRepoName\(r\.name\)/);
+    assert.match(app, /displayRepoName\(c\.roadmapName\)/);
+    assert.match(app, /displayRepoName\(n\.roadmapName\)/);
+    assert.match(app, /const displayTitle = displayChapterTitle\(ch\.title\)/);
+    assert.match(app, /label: displayChapterTitle\(c\.title\)/);
+    assert.match(
+      learningHub,
+      /focusTitle = displayChapterTitle\(selected\.chapter\.title\)/,
+    );
+    assert.match(verification, /displayChapterTitle\(chapter\.title\)/);
+    assert.match(
+      brandCss,
+      /\.message\.user \.content \{[\s\S]*?white-space: normal;/,
+    );
+    assert.equal(
+      (brandCss.match(/white-space: normal;/g) ?? []).length,
+      2,
+      "both user-message layout layers must collapse Markdown's trailing newline",
+    );
   });
 
   test("workspace management lives in Settings, not the primary sidebar", () => {
@@ -169,6 +190,87 @@ describe("client UI contracts", () => {
     assert.match(html, /id="settings-load-state"[^>]*aria-live="polite"/);
     assert.match(app, /element\.inert = blocked/);
     assert.match(app, /setSettingsLoadState\("loading"\)/);
+  });
+
+  test("desktop updates stay open while downloading and expose real progress", () => {
+    assert.match(html, /id="update-progress-meter"[^>]*role="progressbar"/);
+    assert.match(html, /id="update-progress-bar"/);
+    assert.match(html, /id="update-progress-detail"[^>]*aria-live="polite"/);
+    assert.match(baseCss, /\.update-download-progress/);
+    assert.match(baseCss, /\.update-progress-bar/);
+    assert.match(baseCss, /prefers-reduced-motion: reduce/);
+
+    const updateUi = app.slice(
+      app.indexOf("function formatUpdateBytes"),
+      app.indexOf("async function openSettingsModal"),
+    );
+    assert.match(updateUi, /setUpdateDownloadProgress/);
+    assert.match(updateUi, /window\.spiralUpdate\.onProgress/);
+    assert.match(updateUi, /업데이트를 받는 중… \$\{pct\}%/);
+    assert.match(updateUi, /다운로드 완료 · 앱을 다시 여는 중/);
+    assert.match(updateUi, /다운로드가 끝난 뒤 앱이 자동으로 종료되고 다시 열립니다/);
+    assert.doesNotMatch(updateUi, /alert\(`업데이트 실패/);
+
+    const downloader = electronMain.slice(
+      electronMain.indexOf("async function downloadUpdateAsset"),
+      electronMain.indexOf("// ── Windows"),
+    );
+    assert.match(downloader, /phase: "downloading"/);
+    assert.match(downloader, /phase: "verifying"/);
+    assert.match(downloader, /phase: "downloaded"/);
+    assert.match(downloader, /phase: "error"/);
+    assert.match(downloader, /const partialPath = `\$\{dest\}\.part`/);
+    assert.match(downloader, /fs\.renameSync\(partialPath, dest\)/);
+    assert.match(downloader, /size !== asset\.size/);
+    assert.match(electronMain, /await pipeline\(res, out\)/);
+
+    const macInstaller = electronMain.slice(
+      electronMain.indexOf("async function installUpdateMacOS"),
+      electronMain.indexOf("let _updateInstallPromise"),
+    );
+    const downloadAt = macInstaller.indexOf("await downloadUpdateAsset");
+    const prepareAt = macInstaller.indexOf("await prepareMacUpdate");
+    const markerAt = macInstaller.indexOf("writePendingUpdateMarker");
+    const quitAt = macInstaller.indexOf("app.quit()");
+    assert.ok(
+      downloadAt >= 0 &&
+        prepareAt > downloadAt &&
+        markerAt > prepareAt &&
+        quitAt > markerAt,
+      "macOS must download and fully stage the app before approving restart",
+    );
+    assert.doesNotMatch(macInstaller, /curl\s+-fL/);
+    const macPreflight = electronMain.slice(
+      electronMain.indexOf("async function prepareMacUpdate"),
+      electronMain.indexOf("function buildInstallScript"),
+    );
+    assert.match(macPreflight, /hdiutil[\s\S]*?attach/);
+    assert.match(macPreflight, /await fs\.promises\.cp/);
+    assert.match(macPreflight, /isValidMacAppBundle/);
+    assert.match(macPreflight, /finally[\s\S]*?hdiutil[\s\S]*?detach/);
+    const macSwapScript = electronMain.slice(
+      electronMain.indexOf("function buildInstallScript"),
+      electronMain.indexOf("function pendingUpdateMarkerPath"),
+    );
+    assert.doesNotMatch(macSwapScript, /hdiutil attach/);
+    assert.match(macSwapScript, /restore_and_reopen/);
+    assert.match(macSwapScript, /fail_and_reopen/);
+    assert.match(macSwapScript, /activated app bundle is incomplete/);
+    assert.match(electronMain, /updateShutdownApproved = true/);
+    assert.match(
+      electronMain,
+      /will-prevent-unload[\s\S]*?if \(updateShutdownApproved\)[\s\S]*?event\.preventDefault\(\)/,
+    );
+    assert.match(electronMain, /cleanupSuccessfulUpdateBackup/);
+    assert.match(electronMain, /expectedUpdateAssetName/);
+    assert.match(electronMain, /Spiral\.Buddy\.Red-\$\{version\}-arm64\.dmg/);
+    assert.match(electronMain, /Spiral\.Buddy\.Red\.Setup\.\$\{version\}\.exe/);
+    assert.match(electronMain, /\/Applications\/Spiral Buddy Red\.app/);
+    assert.match(electronMain, /executableName: "Spiral Buddy Red"/);
+    assert.match(electronMain, /checked\?\.latest !== version/);
+    assert.match(electronMain, /if \(_updateInstallPromise\)/);
+    assert.match(updateUi, /renderActiveUpdateDownload/);
+    assert.doesNotMatch(updateUi, /aria-busy/);
   });
 
   test("sidebar search is self-evident without a repeated heading", () => {
@@ -439,11 +541,11 @@ describe("client UI contracts", () => {
       productCss,
       /body\.light-mode[\s\S]*?:is\([\s\S]*?#input,[\s\S]*?textarea\.lookup-direct-input,[\s\S]*?\.lookup-direct-context,[\s\S]*?\.lookup-question-text[\s\S]*?\)::placeholder \{[\s\S]*?background: transparent !important;[\s\S]*?background-color: transparent !important;/,
     );
-    assert.match(html, /red-brand\.css\?v=0\.6\.16/);
-    assert.match(html, /helix\.css\?v=0\.6\.16/);
-    assert.match(html, /product-polish\.css\?v=0\.6\.16/);
-    assert.match(html, /verification\.css\?v=0\.6\.16/);
-    assert.match(html, /app\.js\?v=0\.6\.16/);
+    assert.match(html, /red-brand\.css\?v=0\.7\.0/);
+    assert.match(html, /helix\.css\?v=0\.7\.0/);
+    assert.match(html, /product-polish\.css\?v=0\.7\.0/);
+    assert.match(html, /verification\.css\?v=0\.7\.0/);
+    assert.match(html, /app\.js\?v=0\.7\.0/);
   });
 
   test("the home composer stays compact until a learning session starts", () => {

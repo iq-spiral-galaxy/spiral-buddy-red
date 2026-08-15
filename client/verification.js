@@ -1,4 +1,4 @@
-import { cssEscape, escapeAttr, escapeHtml } from "./util.js";
+import { cssEscape, displayChapterTitle, escapeAttr, escapeHtml } from "./util.js";
 import { safeMarkedInto } from "./markdown.js";
 
 const VERDICT_COPY = {
@@ -179,7 +179,7 @@ function challengeMarkup(chapter, card) {
           <span>학습 경로</span>
         </button>
         <div class="verification-context">
-          <strong>${escapeHtml(chapter.title)}</strong>
+          <strong>${escapeHtml(displayChapterTitle(chapter.title))}</strong>
           <span>d1 완료</span>
         </div>
         <span class="verification-solo-badge">첫 판단</span>
@@ -257,7 +257,7 @@ function loadingMarkup(chapter) {
         <button type="button" class="verification-back" data-verification-action="close" aria-label="검증 닫기">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg><span>학습 경로</span>
         </button>
-        <div class="verification-context"><strong>${escapeHtml(chapter.title)}</strong><span>d1 완료</span></div>
+        <div class="verification-context"><strong>${escapeHtml(displayChapterTitle(chapter.title))}</strong><span>d1 완료</span></div>
       </header>
       <div class="verification-loading-body">
         <span class="verification-loader" aria-hidden="true"></span>
@@ -274,7 +274,7 @@ function messageMarkup({ chapter, title, message, action = "retry", actionLabel 
         <button type="button" class="verification-back" data-verification-action="close" aria-label="검증 닫기">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg><span>학습 경로</span>
         </button>
-        <div class="verification-context"><strong>${escapeHtml(chapter.title)}</strong></div>
+        <div class="verification-context"><strong>${escapeHtml(displayChapterTitle(chapter.title))}</strong></div>
       </header>
       <div class="verification-message-body">
         <span class="verification-message-mark" aria-hidden="true">!</span>
@@ -397,7 +397,7 @@ function resultMarkup(chapter, card = null, attempt = {}, result = {}) {
         <button type="button" class="verification-back" data-verification-action="close" aria-label="검증 닫기">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg><span>학습 경로</span>
         </button>
-        <div class="verification-context"><strong>${escapeHtml(chapter.title)}</strong><span>검증 결과</span></div>
+        <div class="verification-context"><strong>${escapeHtml(displayChapterTitle(chapter.title))}</strong><span>검증 결과</span></div>
       </header>
 
       <div class="verification-result-hero ${copy.tone}">
